@@ -1,11 +1,25 @@
 import { Card } from '../../../components/ui/Card';
 import { useQuery } from '@tanstack/react-query';
-import { authService } from '../../../services/auth/authService';
+import { dashboardService } from '../../../services/dashboard/dashboardService';
 
 const DashboardSmart = () => {
-  const { data: user, isLoading, isError } = useQuery({
+  const {
+    data: profileResponse,
+    isLoading: profileLoading,
+    isError: profileError,
+  } = useQuery({
     queryKey: ['user-profile'],
-    queryFn: () => authService.checkAuth(),
+    queryFn: () => dashboardService.getProfile(),
+    retry: false,
+  });
+
+  const {
+    data: statsResponse,
+    isLoading: statsLoading,
+    isError: statsError,
+  } = useQuery({
+    queryKey: ['dashboard-stats'],
+    queryFn: () => dashboardService.getStats(),
     retry: false,
   });
 
