@@ -2,52 +2,80 @@ import React from 'react';
 
 export const AuthLayout = ({ children, title, subtitle }) => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4 font-sans">
-      <div className="w-full max-w-5xl bg-white rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px]">
+    <div className="min-h-screen flex items-center justify-center bg-[#DAFFED] p-4 font-sans selection:bg-[#9BF3F0] selection:text-[#473198]">
+      {/* Dynamic Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#9BF3F0]/20 blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#ADFC92]/20 blur-[120px] animate-pulse delay-700" />
+      </div>
+
+      <div className="w-full max-w-5xl bg-white/40 backdrop-blur-2xl rounded-[3rem] shadow-[0_32px_120px_-20px_rgba(71,49,152,0.1)] overflow-hidden flex flex-col md:flex-row min-h-[700px] border border-white/60 relative z-10">
         
-        {/* Left Side - Brand & Gradient */}
-        <div className="w-full md:w-1/2 bg-gradient-to-b from-blue-500 via-emerald-500 to-green-600 p-8 flex flex-col items-center justify-center relative overflow-hidden">
-          <div className="bg-black/80 rounded-xl p-8 border-4 border-black w-full max-w-[320px] relative shadow-2xl z-20">
-            <h2 className="text-red-600 text-6xl font-black italic tracking-tighter mb-2">FARMA</h2>
-            <div className="text-white text-7xl font-light leading-none mb-6">PRO</div>
-            
-            <div className="space-y-1">
-              <div className="flex justify-between items-end border-b border-white/10 pb-1">
-                <span className="text-red-500 font-bold text-[10px] uppercase leading-none">Gestión<br/>Avanzada</span>
-                <span className="text-white font-mono text-xs text-right">101010<br/>010101</span>
-              </div>
-              <div className="flex justify-between items-end border-b border-white/10 pb-1">
-                <span className="text-red-500 font-bold text-[10px] uppercase leading-none">Inventario</span>
-                <span className="text-white font-mono text-xs">101010</span>
-              </div>
-              <div className="flex justify-between items-end">
-                <span className="text-red-500 font-bold text-[10px] uppercase leading-none">Facturación</span>
-                <span className="text-white font-mono text-xs">010101</span>
-              </div>
+        {/* Left Side - Brand & Visuals */}
+        <div className="w-full md:w-5/12 bg-[#473198] p-12 flex flex-col items-center justify-center relative overflow-hidden">
+          {/* Abstract Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[size:24px_24px]" />
+          </div>
+          
+          <div className="relative z-20 text-center">
+            <div className="inline-block px-4 py-1.5 bg-[#9BF3F0] text-[#473198] text-[10px] font-black uppercase tracking-[0.3em] rounded-full mb-6">
+              Core System v2.0
             </div>
+            
+            <div className="mb-8">
+              <h2 className="text-[#DAFFED] text-7xl font-black italic tracking-tighter leading-none mb-1">FARMA</h2>
+              <div className="text-white text-8xl font-light leading-none opacity-90">PRO</div>
+            </div>
+
+            <div className="space-y-4 max-w-[240px] mx-auto">
+              <div className="flex justify-between items-center py-2 border-b border-white/10">
+                <span className="text-[#ADFC92] font-bold text-[10px] uppercase tracking-wider">Pharmacy Control</span>
+                <div className="flex gap-1">
+                  <div className="w-1 h-1 rounded-full bg-[#9BF3F0]" />
+                  <div className="w-1 h-1 rounded-full bg-[#9BF3F0]/40" />
+                </div>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-white/10">
+                <span className="text-[#ADFC92] font-bold text-[10px] uppercase tracking-wider">Inventory Sync</span>
+                <span className="text-white/40 font-mono text-[10px]">ACTIVE</span>
+              </div>
+              <p className="text-white/40 text-[10px] font-medium leading-relaxed tracking-wide pt-2">
+                Unified pharmaceutical management platform with real-time analytics.
+              </p>
+            </div>
+          </div>
+
+          {/* Bottom Accreditation */}
+          <div className="absolute bottom-8 left-12 right-12 flex justify-between items-center text-white/20 text-[8px] font-bold uppercase tracking-[0.2em]">
+            <span>Secure Access</span>
+            <div className="w-8 h-px bg-white/10" />
+            <span>Encrypted Endpoint</span>
           </div>
         </div>
 
         {/* Right Side - Form Container */}
-        <div className="w-full md:w-1/2 p-10 flex flex-col justify-center bg-white relative">
-          <div className="mb-8 text-center">
-            <h1 className="text-red-600 text-5xl md:text-6xl font-bold tracking-tighter italic">FARMAPRO</h1>
-            <p className="text-gray-500 mt-2 font-medium tracking-wide uppercase text-sm">
-              {title} {subtitle ? `- ${subtitle}` : ''}
-            </p>
-          </div>
+        <div className="w-full md:w-7/12 p-8 md:p-16 flex flex-col justify-center relative bg-gradient-to-br from-white/40 to-transparent">
+          <div className="max-w-md mx-auto w-full">
+            <div className="mb-10">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-8 h-1 rounded-full bg-[#9BF3F0]" />
+                <h3 className="text-[#473198] text-sm font-black uppercase tracking-widest">{title}</h3>
+              </div>
+              <p className="text-[#473198]/40 text-sm font-medium">
+                {subtitle || 'Manage your pharmacy with the most advanced core system available.'}
+              </p>
+            </div>
 
-          <div className="w-full max-w-sm mx-auto">
-            {children}
-          </div>
+            <div className="space-y-6">
+              {children}
+            </div>
 
-          <div className="mt-12 flex items-center justify-center gap-3 text-gray-400 font-bold text-xs uppercase tracking-widest">
-            <span>Soporte Técnico</span>
-            <a href="#" className="text-emerald-500 hover:scale-125 transition-transform">
-              <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-              </svg>
-            </a>
+            <div className="mt-12 text-center">
+              <p className="text-[10px] text-[#473198]/30 font-bold uppercase tracking-[0.2em]">
+                &copy; 2026 FarmaPro Systems &bull; All Rights Reserved
+              </p>
+            </div>
           </div>
         </div>
       </div>

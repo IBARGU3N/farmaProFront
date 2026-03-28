@@ -1,55 +1,60 @@
-import { useState } from 'react';
+import React, { useState, forwardRef } from 'react';
 
-export const TextInput = ({
+export const TextInput = forwardRef(({
   label,
   type = 'text',
   placeholder = '',
-  value = '',
-  onChange,
   error,
   ...rest
-}) => {
+}, ref) => {
   const [isFocused, setIsFocused] = useState(false);
+
+  // Colors: 
+  // DAFFED (Lightest Mint)
+  // 9BF3F0 (Electric Cyan)
+  // 473198 (Deep Purple)
+  // 4A0D67 (Darker Purple for focus)
+  // ADFC92 (Light Green)
 
   return (
     <div className="mb-4">
       <label 
         htmlFor={label.toLowerCase().replace(/\s+/g, '-')} 
-        className={`block text-sm font-medium text-[#473198] mb-1 ${
+        className={`block text-sm font-medium mb-1 transition-colors duration-200 ${
           isFocused ? 'text-[#4A0D67]' : 'text-[#473198]'
         }`}
       >
         {label}
       </label>
-      <div className="relative">
+      <div className="relative group">
         <input
           id={label.toLowerCase().replace(/\s+/g, '-')}
           type={type}
           placeholder={placeholder}
-          value={value}
-          onChange={(e) => {
-            onChange(e.target.value);
-          }}
+          ref={ref}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className={`w-full px-3 py-2 border border-[#9BF3F0] rounded-md 
-            focus:outline-none focus:ring-2 focus:ring-[#9BF3F0]/50 
+          className={`w-full px-4 py-2 bg-[#DAFFED]/20 border-2 rounded-xl transition-all duration-200
             ${
               error 
-                ? 'border-[#ADFC92]/50 focus:ring-[#ADFC92]/50' 
-                : 'focus:border-[#9BF3F0]/50'
+                ? 'border-red-400 focus:border-red-500 focus:ring-red-100' 
+                : isFocused 
+                  ? 'border-[#9BF3F0] ring-4 ring-[#9BF3F0]/20' 
+                  : 'border-[#9BF3F0]/30 group-hover:border-[#9BF3F0]/60'
             }
-            ${isFocused ? 'border-[#9BF3F0]/50' : ''}`}
+            placeholder:text-[#473198]/30 text-[#473198] focus:outline-none`}
           {...rest}
         />
         {error && (
-          <p className="mt-1 text-sm text-[#ADFC92]">
-            {error}
+          <p className="mt-1.5 text-xs font-semibold text-red-500 flex items-center">
+            <span className="mr-1">⚠️</span> {error}
           </p>
         )}
       </div>
     </div>
   );
-};
+});
+
+TextInput.displayName = 'TextInput';
 
 

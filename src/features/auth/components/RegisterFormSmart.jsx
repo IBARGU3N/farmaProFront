@@ -5,7 +5,7 @@ import { authService } from '../../../services/auth/authService';
 import { AuthLayout } from './AuthLayout';
 import RegisterForm from './RegisterForm';
 
-const RegisterFormSmart = () => {
+export const RegisterFormSmart = () => {
   const navigate = useNavigate();
   const {
     register,
@@ -52,11 +52,14 @@ const RegisterFormSmart = () => {
         isError={isError}
         error={error?.response?.data?.message || 'An error occurred'}
       />
-      <div className="mt-6 flex flex-col space-y-3 text-center text-sm">
-        <p className="text-gray-400">
+      <div className="mt-8 text-center">
+        <p className="text-[#473198]/40 text-xs font-bold uppercase tracking-widest">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors duration-200">
-            Sign in here
+          <Link 
+            to="/login" 
+            className="text-[#473198] hover:text-[#4A0D67] border-b-2 border-[#9BF3F0] transition-all duration-200"
+          >
+            Log in here
           </Link>
         </p>
       </div>
@@ -64,5 +67,5 @@ const RegisterFormSmart = () => {
   );
 };
 
-export default RegisterFormSmart;
+
 

@@ -7,10 +7,10 @@ import { RequireAuth } from '../components/layout/RequireAuth';
 import { GlobalLoader } from '../components/ui/GlobalLoader';
 
 // Auth Pages (Eagerly loaded for fast paint)
-import LoginFormSmart from '../features/auth/components/LoginFormSmart';
-import RegisterFormSmart from '../features/auth/components/RegisterFormSmart';
-import ForgotPasswordSmart from '../features/auth/components/ForgotPasswordSmart';
-import ResetPasswordSmart from '../features/auth/components/ResetPasswordSmart';
+import { LoginFormSmart } from '../features/auth/components/LoginFormSmart';
+import { RegisterFormSmart } from '../features/auth/components/RegisterFormSmart';
+import { ForgotPasswordSmart } from '../features/auth/components/ForgotPasswordSmart';
+import { ResetPasswordSmart } from '../features/auth/components/ResetPasswordSmart';
 
 // Lazy loaded feature domains
 const DashboardModule = lazy(() => import('../features/dashboard/DashboardRouter'));

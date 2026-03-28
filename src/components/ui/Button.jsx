@@ -25,11 +25,11 @@ export const Button = ({
   `;
 
   const variantClasses = variant === 'primary'
-    ? 'bg-[#473198] text-white hover:bg-[#4A0D67] focus:ring-[#4A0D67]/50'
+    ? 'bg-[#473198] text-white hover:bg-[#4A0D67] ring-[#473198]/50 shadow-lg shadow-[#473198]/20'
     : variant === 'secondary'
-    ? 'bg-[#9BF3F0] text-[#473198] hover:bg-[#ADFC92] focus:ring-[#ADFC92]/50'
+    ? 'bg-[#9BF3F0] text-[#473198] hover:bg-[#ADFC92] ring-[#9BF3F0]/50 shadow-lg shadow-[#9BF3F0]/20'
     : variant === 'outline'
-    ? 'border border-[#9BF3F0] text-[#473198] hover:bg-[#9BF3F0]/20 focus:ring-[#9BF3F0]/50'
+    ? 'border-2 border-[#9BF3F0] text-[#473198] hover:bg-[#DAFFED]/50 ring-[#9BF3F0]/50'
     : '';
 
   const sizeClasses = size === 'small'

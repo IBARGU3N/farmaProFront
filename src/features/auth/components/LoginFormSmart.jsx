@@ -6,7 +6,7 @@ import { authStorage } from '../../../lib/authStorage';
 import { AuthLayout } from './AuthLayout';
 import LoginForm from './LoginForm';
 
-const LoginFormSmart = () => {
+export const LoginFormSmart = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const {
@@ -52,13 +52,19 @@ const LoginFormSmart = () => {
         isError={isError}
         error={error?.response?.data?.message || 'An error occurred'}
       />
-      <div className="mt-6 flex flex-col space-y-3 text-center text-sm">
-        <Link to="/forgot-password" className="text-gray-400 hover:text-white transition-colors duration-200">
+      <div className="mt-8 flex flex-col space-y-4 text-center">
+        <Link 
+          to="/forgot-password" 
+          className="text-[#473198]/60 hover:text-[#473198] text-sm font-bold transition-all duration-200"
+        >
           Forgot your password?
         </Link>
-        <p className="text-gray-400">
+        <p className="text-[#473198]/40 text-xs font-bold uppercase tracking-widest">
           Don't have an account?{' '}
-          <Link to="/register" className="text-blue-400 hover:text-blue-300 font-medium transition-colors duration-200">
+          <Link 
+            to="/register" 
+            className="text-[#473198] hover:text-[#4A0D67] border-b-2 border-[#9BF3F0] transition-all duration-200"
+          >
             Sign up here
           </Link>
         </p>
@@ -67,5 +73,5 @@ const LoginFormSmart = () => {
   );
 };
 
-export default LoginFormSmart;
+
 
