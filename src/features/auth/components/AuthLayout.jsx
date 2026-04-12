@@ -1,15 +1,31 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 export const AuthLayout = ({ children, title, subtitle }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#DAFFED] p-4 font-sans selection:bg-[#9BF3F0] selection:text-[#473198]">
       {/* Dynamic Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#9BF3F0]/20 blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#ADFC92]/20 blur-[120px] animate-pulse delay-700" />
+        <motion.div 
+          initial={{ x: -200, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#9BF3F0]/20 blur-[120px] animate-pulse"
+        />
+        <motion.div 
+          initial={{ x: 200, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 1.5, delay: 0.3, ease: "easeOut" }}
+          className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#ADFC92]/20 blur-[120px] animate-pulse delay-700"
+        />
       </div>
 
-      <div className="w-full max-w-5xl bg-white/40 backdrop-blur-2xl rounded-[3rem] shadow-[0_32px_120px_-20px_rgba(71,49,152,0.1)] overflow-hidden flex flex-col md:flex-row min-h-[700px] border border-white/60 relative z-10">
+       <motion.div 
+         initial={{ opacity: 0, y: 20 }}
+         animate={{ opacity: 1, y: 0 }}
+         transition={{ duration: 0.8, delay: 0.6 }}
+         className="w-full max-w-5xl bg-white/40 backdrop-blur-2xl rounded-[3rem] shadow-[0_32px_120px_-20px_rgba(71,49,152,0.1)] overflow-hidden flex flex-col md:flex-row min-h-[700px] border border-white/60 relative z-10"
+       >
         
         {/* Left Side - Brand & Visuals */}
         <div className="w-full md:w-5/12 bg-[#473198] p-12 flex flex-col items-center justify-center relative overflow-hidden">
@@ -72,16 +88,16 @@ export const AuthLayout = ({ children, title, subtitle }) => {
             </div>
 
             <div className="mt-12 text-center">
-              <p className="text-[10px] text-[#473198]/30 font-bold uppercase tracking-[0.2em]">
-                &copy; 2026 FarmaPro Systems &bull; All Rights Reserved
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+               <p className="text-[10px] text-[#473198]/30 font-bold uppercase tracking-[0.2em]">
+                 &copy; 2026 FarmaPro Systems &bull; All Rights Reserved
+               </p>
+             </div>
+           </div>
+         </div>
+       </motion.div>
+     </div>
+   );
+ };
 
 
 

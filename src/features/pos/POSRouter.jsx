@@ -1,10 +1,10 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import POSPlaceholder from './components/POSPlaceholder';
+import POSSmart from './components/POSSmart';
 
 const POSRouter = () => {
   return (
     <Routes>
-      <Route index element={<POSPlaceholder />} />
+      <Route index element={<POSSmart />} />
       <Route path="*" element={<Navigate to="." replace />} />
     </Routes>
   );

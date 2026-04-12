@@ -4,7 +4,7 @@ export const APP_CONFIG = {
   NAME: 'FarmaPro',
   VERSION: '1.0.0',
   THEME_STORAGE_KEY: 'farmapro_theme',
-  AUTH_TOKEN_KEY: 'farmapro_token',
+  AUTH_TOKEN_KEY: 'access_token',
 };
 
 // Application Modules
