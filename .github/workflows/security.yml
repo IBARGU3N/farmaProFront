@@ -1,0 +1,60 @@
+name: Security Scan - Frontend
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main, dev]
+  schedule:
+    - cron: '0 6 * * 1'
+
+jobs:
+  dependency-audit:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: npm Audit
+        run: npm audit --audit-level=high --json > npm-audit.json 2>&1 || true
+        continue-on-error: true
+
+      - name: Check for exposed secrets
+        run: |
+          echo "Buscando posibles secretos en código..."
+          
+          SECRETS=$(grep -r -E "(api[_-]?key|token|password|secret)\s*=\s*['\"][^'\"]{8,}['\"]" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.json" . 2>/dev/null | grep -v node_modules | grep -v dist || true)
+          
+          if [ -n "$SECRETS" ]; then
+            echo "❌ Posibles secretos hardcodeados detectados:"
+            echo "$SECRETS"
+            exit 1
+          fi
+          
+          echo "✅ Sin secretos hardcodeados detectados"
+        shell: bash
+
+      - name: Check .env files
+        run: |
+          if find . -name ".env*" -not -path "*/node_modules/*" | grep -q "."; then
+            echo "⚠️ Archivos .env* detectados"
+            find . -name ".env*" -not -path "*/node_modules/*" -not -name ".env.example" -not -name ".env.development"
+          fi
+
+      - name: Upload audit results
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-security-audit
+          path: npm-audit.json
+          retention-days: 7
+        continue-on-error: true

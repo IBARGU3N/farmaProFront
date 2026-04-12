@@ -1,0 +1,48 @@
+name: Deploy - FarmaPro Frontend
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    name: Deploy to ${{ inputs.environment || 'staging' }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'staging' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to ${{ inputs.environment || 'staging' }}
+        run: |
+          echo "🚀 Desplegando a ${{ inputs.environment || 'staging' }}..."
+          echo ""
+          echo "⚠️ Configura tu destino de deploy:"
+          echo "   - Vercel: npx vercel --prod"
+          echo "   - Netlify: netlify deploy --prod"
+          echo "   - S3: aws s3 sync dist/ s3://bucket/"
+        shell: bash

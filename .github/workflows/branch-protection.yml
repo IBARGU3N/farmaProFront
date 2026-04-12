@@ -1,0 +1,25 @@
+# FarmaPro Frontend - GitHub Actions
+
+name: Branch Protection
+
+on:
+  push:
+    branches: [main, dev]
+
+jobs:
+  configure-protection:
+    name: Configure Branch Protection
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate Report
+        run: |
+          echo "# 🔒 FarmaPro Frontend - Branch Protection"
+          echo ""
+          echo "| Rama | Reglas |"
+          echo "|------|--------|"
+          echo "| main | 1 approval + CI checks |"
+          echo "| dev | CI checks |"
