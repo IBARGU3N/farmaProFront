@@ -7,6 +7,7 @@ import { authStorage } from '../../../lib/authStorage';
 import { AuthLayout } from './AuthLayout';
 import LoginForm from './LoginForm';
 import useUIStore from '../../../store/uiStore';
+import { useAuthStore } from '../../../store/authStore';
 
 export const LoginFormSmart = () => {
   const navigate = useNavigate();
@@ -31,14 +32,21 @@ export const LoginFormSmart = () => {
       if (response.data.success) {
         const payload = response.data.data;
         authStorage.saveTokens(payload.access_token, payload.refresh_token);
+        
+        // Update Zustand Global State
+        useAuthStore.getState().setUser(payload.user);
+
         queryClient.invalidateQueries({ queryKey: ['auth'] });
         navigate('/dashboard', { replace: true });
+        showToast('¡Bienvenido! Sesión iniciada con éxito.', 'success');
       }
     },
     onError: (err) => {
       const serverMessage = err?.response?.data?.message;
+      const errorData = err?.response?.data?.error;
       const fieldErrors = err?.response?.data?.errors;
 
+      // Handle FormRequest validation errors (422)
       if (fieldErrors) {
         Object.entries(fieldErrors).forEach(([field, messages]) => {
           if (Array.isArray(messages) && messages.length > 0) {
@@ -48,7 +56,16 @@ export const LoginFormSmart = () => {
             });
           }
         });
-      } else {
+        showToast('Por favor, revisa los campos del formulario.', 'error');
+      } 
+      // Handle AuthenticationException errors (401 from backend changes)
+      else if (errorData?.type === 'authentication_error') {
+         setError('email', { type: 'server', message: 'Credenciales inválidas' });
+         setError('password', { type: 'server', message: 'Credenciales inválidas' });
+         showToast(serverMessage || 'Las credenciales proporcionadas son incorrectas.', 'error');
+      } 
+      // Handle undefined errors
+      else {
         showToast(serverMessage || 'Error al iniciar sesión. Verifique sus credenciales e intente nuevamente.', 'error');
       }
     },
