@@ -7,6 +7,7 @@ import { authStorage } from '../../../lib/authStorage';
 import { AuthLayout } from './AuthLayout';
 import RegisterForm from './RegisterForm';
 import useUIStore from '../../../store/uiStore';
+import { useAuthStore } from '../../../store/authStore';
 
 export const RegisterFormSmart = () => {
   const navigate = useNavigate();
@@ -33,8 +34,10 @@ export const RegisterFormSmart = () => {
       if (response.data.success) {
         const payload = response.data.data;
         authStorage.saveTokens(payload.access_token, payload.refresh_token);
+        useAuthStore.getState().setUser(payload.user);
         queryClient.invalidateQueries({ queryKey: ['auth'] });
         navigate('/dashboard', { replace: true });
+        showToast('Cuenta creada con éxito. ¡Bienvenido a FarmaPro!', 'success');
       }
     },
     onError: (err) => {
