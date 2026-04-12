@@ -3,7 +3,7 @@ import { TextInput } from '../../../components/ui/TextInput';
 import { Card } from '../../../components/ui/Card';
 import { motion } from 'framer-motion';
 
-const ForgotPasswordForm = ({ onSubmit, register, errors, isLoading, apiError }) => {
+const ForgotPasswordForm = ({ onSubmit, register, errors, isLoading, isSuccess, successMessage, apiError }) => {
   return (
     <Card className="w-full max-w-md mx-auto">
       <motion.form 
@@ -13,6 +13,17 @@ const ForgotPasswordForm = ({ onSubmit, register, errors, isLoading, apiError })
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
+        {isSuccess && successMessage && (
+          <div className="rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">
+            {successMessage}
+          </div>
+        )}
+        {apiError && !errors?.email?.message && (
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+            {apiError}
+          </div>
+        )}
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -20,11 +31,17 @@ const ForgotPasswordForm = ({ onSubmit, register, errors, isLoading, apiError })
           className="space-y-4"
         >
           <TextInput
-            label="Email Address"
+            label="Correo electrónico"
             type="email"
-            placeholder="john@example.com"
+            placeholder="correo@ejemplo.com"
             error={errors?.email?.message || apiError}
-            {...register('email')}
+            {...register('email', {
+              required: 'El correo electrónico es obligatorio',
+              pattern: {
+                value: /^\S+@\S+\.\S+$/,
+                message: 'El correo electrónico debe tener un formato válido',
+              },
+            })}
           />
         </motion.div>
 
@@ -35,7 +52,7 @@ const ForgotPasswordForm = ({ onSubmit, register, errors, isLoading, apiError })
           className="pt-2"
         >
           <Button type="submit" isLoading={isLoading} className="w-full">
-            Send Reset Link
+            Enviar enlace
           </Button>
         </motion.div>
       </motion.form>

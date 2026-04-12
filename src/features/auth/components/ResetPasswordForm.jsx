@@ -2,46 +2,52 @@ import { Button } from '../../../components/ui/Button';
 import { TextInput } from '../../../components/ui/TextInput';
 import { Card } from '../../../components/ui/Card';
 
-const ResetPasswordForm = ({ onSubmit, register, watch, errors, isLoading }) => {
+const ResetPasswordForm = ({ onSubmit, register, watch, errors, isLoading, isError, error }) => {
   return (
     <Card className="w-full max-w-md mx-auto">
       <form onSubmit={onSubmit} className="space-y-6 p-6">
+        {isError && error && (
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+            {error}
+          </div>
+        )}
+
         <div className="space-y-4">
           <TextInput
-            label="Email Address"
+            label="Correo electrónico"
             type="email"
-            placeholder="john@example.com"
+            placeholder="correo@ejemplo.com"
             {...register('email', {
-              required: 'Email is required',
+              required: 'El correo electrónico es obligatorio',
               pattern: {
                 value: /^\S+@\S+\.\S+$/,
-                message: 'Email address is invalid'
-              }
+                message: 'El correo electrónico debe tener un formato válido',
+              },
             })}
             error={errors?.email?.message}
           />
 
           <TextInput
-            label="New Password"
+            label="Nueva contraseña"
             type="password"
             placeholder="••••••••"
             {...register('password', {
-              required: 'Password is required',
+              required: 'La contraseña es obligatoria',
               minLength: {
                 value: 8,
-                message: 'Password must be at least 8 characters'
-              }
+                message: 'La contraseña debe tener al menos 8 caracteres',
+              },
             })}
             error={errors?.password?.message}
           />
 
           <TextInput
-            label="Confirm New Password"
+            label="Confirmar contraseña"
             type="password"
             placeholder="••••••••"
             {...register('password_confirmation', {
-              required: 'Please confirm your password',
-              validate: (value) => value === watch('password') || 'Passwords do not match'
+              required: 'Por favor confirme su contraseña',
+              validate: (value) => value === watch('password') || 'Las contraseñas no coinciden',
             })}
             error={errors?.password_confirmation?.message}
           />
@@ -49,7 +55,7 @@ const ResetPasswordForm = ({ onSubmit, register, watch, errors, isLoading }) => 
 
         <div className="pt-2">
           <Button type="submit" isLoading={isLoading} className="w-full">
-            Reset Password
+            Restablecer contraseña
           </Button>
         </div>
       </form>

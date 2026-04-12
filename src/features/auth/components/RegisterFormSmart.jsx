@@ -16,6 +16,7 @@ export const RegisterFormSmart = () => {
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -39,7 +40,20 @@ export const RegisterFormSmart = () => {
     },
     onError: (err) => {
       const serverMessage = err?.response?.data?.message;
-      showToast(serverMessage || 'Error al registrar usuario. Por favor, intente nuevamente.', 'error');
+      const fieldErrors = err?.response?.data?.errors;
+
+      if (fieldErrors) {
+        Object.entries(fieldErrors).forEach(([field, messages]) => {
+          if (Array.isArray(messages) && messages.length > 0) {
+            setError(field, {
+              type: 'server',
+              message: messages[0],
+            });
+          }
+        });
+      } else {
+        showToast(serverMessage || 'Error al registrar usuario. Por favor, intente nuevamente.', 'error');
+      }
     },
   });
 

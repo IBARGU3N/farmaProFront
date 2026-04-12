@@ -15,6 +15,7 @@ export const LoginFormSmart = () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -37,11 +38,14 @@ export const LoginFormSmart = () => {
     onError: (err) => {
       const serverMessage = err?.response?.data?.message;
       const fieldErrors = err?.response?.data?.errors;
-      
+
       if (fieldErrors) {
         Object.entries(fieldErrors).forEach(([field, messages]) => {
           if (Array.isArray(messages) && messages.length > 0) {
-            // Field errors handled by react-hook-form
+            setError(field, {
+              type: 'server',
+              message: messages[0],
+            });
           }
         });
       } else {
