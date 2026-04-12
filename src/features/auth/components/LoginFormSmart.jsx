@@ -45,6 +45,7 @@ export const LoginFormSmart = () => {
       const serverMessage = err?.response?.data?.message;
       const errorData = err?.response?.data?.error;
       const fieldErrors = err?.response?.data?.errors;
+      const status = err?.response?.status;
 
       // Handle FormRequest validation errors (422)
       if (fieldErrors) {
@@ -57,13 +58,13 @@ export const LoginFormSmart = () => {
           }
         });
         showToast('Por favor, revisa los campos del formulario.', 'error');
-      } 
+      }
       // Handle AuthenticationException errors (401 from backend changes)
-      else if (errorData?.type === 'authentication_error') {
+      else if (status === 401 || errorData?.type === 'authentication_error') {
          setError('email', { type: 'server', message: 'Credenciales inválidas' });
          setError('password', { type: 'server', message: 'Credenciales inválidas' });
          showToast(serverMessage || 'Las credenciales proporcionadas son incorrectas.', 'error');
-      } 
+      }
       // Handle undefined errors
       else {
         showToast(serverMessage || 'Error al iniciar sesión. Verifique sus credenciales e intente nuevamente.', 'error');

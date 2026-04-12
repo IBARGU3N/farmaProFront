@@ -2,10 +2,10 @@ export const TopBar = ({ user, currentTime, onLogout, isDark, onToggleDark, Aler
   return (
     <header className="bg-white/60 backdrop-blur-md border-b border-[#9BF3F0]/30 h-16 flex items-center justify-between px-8 sticky top-0 z-20">
       <div className="flex items-center gap-4">
-        <div className="text-[#473198]/40 font-bold text-[10px] uppercase tracking-[0.2em] flex items-center gap-2">
-          System 
+          <div className="text-[#473198]/40 font-bold text-[10px] uppercase tracking-[0.2em] flex items-center gap-2">
+          Sistema 
           <span className="w-1 h-1 rounded-full bg-[#ADFC92] opacity-100" /> 
-          Ready
+          Activo
         </div>
       </div>
       

@@ -36,7 +36,7 @@ export const AuthLayout = ({ children, title, subtitle }) => {
           
           <div className="relative z-20 text-center">
             <div className="inline-block px-4 py-1.5 bg-[#9BF3F0] text-[#473198] text-[10px] font-black uppercase tracking-[0.3em] rounded-full mb-6">
-              Core System v2.0
+              Sistema Central v2.0
             </div>
             
             <div className="mb-8">
@@ -46,27 +46,27 @@ export const AuthLayout = ({ children, title, subtitle }) => {
 
             <div className="space-y-4 max-w-[240px] mx-auto">
               <div className="flex justify-between items-center py-2 border-b border-white/10">
-                <span className="text-[#ADFC92] font-bold text-[10px] uppercase tracking-wider">Pharmacy Control</span>
+                <span className="text-[#ADFC92] font-bold text-[10px] uppercase tracking-wider">Control de Farmacia</span>
                 <div className="flex gap-1">
                   <div className="w-1 h-1 rounded-full bg-[#9BF3F0]" />
                   <div className="w-1 h-1 rounded-full bg-[#9BF3F0]/40" />
                 </div>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-white/10">
-                <span className="text-[#ADFC92] font-bold text-[10px] uppercase tracking-wider">Inventory Sync</span>
-                <span className="text-white/40 font-mono text-[10px]">ACTIVE</span>
+                <span className="text-[#ADFC92] font-bold text-[10px] uppercase tracking-wider">Sincronizacion de Inventario</span>
+                <span className="text-white/40 font-mono text-[10px]">ACTIVO</span>
               </div>
               <p className="text-white/40 text-[10px] font-medium leading-relaxed tracking-wide pt-2">
-                Unified pharmaceutical management platform with real-time analytics.
+                Plataforma unificada de gestion farmaceutica con analiticas en tiempo real.
               </p>
             </div>
           </div>
 
           {/* Bottom Accreditation */}
           <div className="absolute bottom-8 left-12 right-12 flex justify-between items-center text-white/20 text-[8px] font-bold uppercase tracking-[0.2em]">
-            <span>Secure Access</span>
+            <span>Acceso Seguro</span>
             <div className="w-8 h-px bg-white/10" />
-            <span>Encrypted Endpoint</span>
+            <span>Endpoint Cifrado</span>
           </div>
         </div>
 
@@ -79,7 +79,7 @@ export const AuthLayout = ({ children, title, subtitle }) => {
                 <h3 className="text-[#473198] text-sm font-black uppercase tracking-widest">{title}</h3>
               </div>
               <p className="text-[#473198]/40 text-sm font-medium">
-                {subtitle || 'Manage your pharmacy with the most advanced core system available.'}
+                {subtitle || 'Gestione su farmacia con el sistema central mas avanzado disponible.'}
               </p>
             </div>
 
@@ -87,9 +87,9 @@ export const AuthLayout = ({ children, title, subtitle }) => {
               {children}
             </div>
 
-            <div className="mt-12 text-center">
+             <div className="mt-12 text-center">
                <p className="text-[10px] text-[#473198]/30 font-bold uppercase tracking-[0.2em]">
-                 &copy; 2026 FarmaPro Systems &bull; All Rights Reserved
+                 &copy; 2026 FarmaPro Systems &bull; Todos los derechos reservados
                </p>
              </div>
            </div>
