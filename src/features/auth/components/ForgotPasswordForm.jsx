@@ -1,37 +1,46 @@
 import { Button } from '../../../components/ui/Button';
 import { TextInput } from '../../../components/ui/TextInput';
 import { Card } from '../../../components/ui/Card';
+import { motion } from 'framer-motion';
 
-const ForgotPasswordForm = ({ onSubmit, register, errors, isLoading }) => {
+const ForgotPasswordForm = ({ onSubmit, register, errors, isLoading, apiError }) => {
   return (
     <Card className="w-full max-w-md mx-auto">
-      <form onSubmit={onSubmit} className="space-y-6 p-6">
-        <div className="space-y-4">
+      <motion.form 
+        onSubmit={onSubmit} 
+        className="space-y-6 p-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="space-y-4"
+        >
           <TextInput
             label="Email Address"
             type="email"
             placeholder="john@example.com"
-            {...register('email', {
-              required: 'Email is required',
-              pattern: {
-                value: /^\S+@\S+\.\S+$/,
-                message: 'Email address is invalid'
-              }
-            })}
-            error={errors?.email?.message}
+            error={errors?.email?.message || apiError}
+            {...register('email')}
           />
-        </div>
+        </motion.div>
 
-        <div className="pt-2">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.3 }}
+          className="pt-2"
+        >
           <Button type="submit" isLoading={isLoading} className="w-full">
             Send Reset Link
           </Button>
-        </div>
-      </form>
+        </motion.div>
+      </motion.form>
     </Card>
   );
 };
 
 export default ForgotPasswordForm;
-
-

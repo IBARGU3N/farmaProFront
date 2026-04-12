@@ -1,46 +1,63 @@
 import { Button } from '../../../components/ui/Button';
 import { TextInput } from '../../../components/ui/TextInput';
 import { Card } from '../../../components/ui/Card';
+import { motion } from 'framer-motion';
 
 const LoginForm = ({ onSubmit, register, errors, isLoading }) => {
   return (
     <Card className="w-full max-w-md">
-      <form onSubmit={onSubmit} className="space-y-6">
-        <div className="space-y-4">
+      <motion.form 
+        onSubmit={onSubmit} 
+        className="space-y-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="space-y-4"
+        >
           <TextInput
-            label="Email"
+            label="Correo electrónico"
             type="email"
-            placeholder="Enter your email"
+            placeholder="correo@ejemplo.com"
             {...register('email', {
-              required: 'Email is required',
+              required: 'El correo electrónico es obligatorio',
               pattern: {
                 value: /^\S+@\S+\.\S+$/,
-                message: 'Email address is invalid'
+                message: 'El correo electrónico debe tener un formato válido'
               }
             })} 
             error={errors?.email?.message}
           />
           <TextInput
-            label="Password"
+            label="Contraseña"
             type="password"
-            placeholder="Enter your password"
+            placeholder="••••••••"
             {...register('password', {
-              required: 'Password is required',
+              required: 'La contraseña es obligatoria',
               minLength: {
                 value: 8,
-                message: 'Password must be at least 8 characters'
+                message: 'La contraseña debe tener al menos 8 caracteres'
               }
             })} 
             error={errors?.password?.message}
           />
-        </div>
-        
-        <div className="flex items-center justify-between">
+        </motion.div>
+          
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.3 }}
+          className="flex items-center justify-between"
+        >
           <Button type="submit" isLoading={isLoading}>
-            Login
+            Iniciar sesión
           </Button>
-        </div>
-      </form>
+        </motion.div>
+      </motion.form>
     </Card>
   );
 };

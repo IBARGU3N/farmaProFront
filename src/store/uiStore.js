@@ -29,11 +29,16 @@ const useUIStore = create((set) => ({
   isSidebarOpen: true,
   toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
   setSidebarOpen: (isOpen) => set({ isSidebarOpen: isOpen }),
-
+ 
   // Mobile Menu State
   isMobileMenuOpen: false,
   toggleMobileMenu: () => set((state) => ({ isMobileMenuOpen: !state.isMobileMenuOpen })),
   setMobileMenuOpen: (isOpen) => set({ isMobileMenuOpen: isOpen }),
+
+  // Toast Notifications State
+  toast: null,
+  showToast: (message, type = 'error') => set({ toast: { message, type } }),
+  hideToast: () => set({ toast: null }),
 }));
 
 export default useUIStore;
