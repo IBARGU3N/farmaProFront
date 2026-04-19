@@ -3,8 +3,10 @@ import ReactDOM from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 import App from './App';
 import './index.css';
+import { initAntiInspect } from './utils/antiInspect';
 
 if (import.meta.env.PROD) {
+  initAntiInspect();
   console.log = () => {};
   console.error = () => {};
   console.debug = () => {};

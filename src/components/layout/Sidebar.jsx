@@ -51,13 +51,13 @@ const icons = {
 
 export const Sidebar = ({ user, onLogout, navItems }) => {
   return (
-    <aside className="w-64 bg-[#DAFFED] border-r border-[#9BF3F0]/30 shadow-2xl flex flex-col">
+    <aside className="w-64 bg-secondary border-r border-secondary/30 shadow-2xl flex flex-col transition-colors duration-500">
       <div className="px-6 py-8">
         <div className="flex items-center gap-3 mb-10">
-          <div className="w-10 h-10 rounded-2xl bg-[#473198] flex items-center justify-center text-white font-black text-xl shadow-lg shadow-[#473198]/20">
+          <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-white font-black text-xl shadow-lg shadow-primary/20">
             F
           </div>
-          <h1 className="text-2xl font-black text-[#473198] tracking-tighter italic">FARMAPRO</h1>
+          <h1 className="text-2xl font-black text-primary tracking-tighter italic">FARMAPRO</h1>
         </div>
         
         <nav className="space-y-1.5">
@@ -67,35 +67,39 @@ export const Sidebar = ({ user, onLogout, navItems }) => {
               to={item.to} 
               end={item.end}
               className={({ isActive }) => `
-                flex items-center px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-200
+                flex items-center px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-300
                 ${isActive 
-                  ? 'bg-[#473198] text-white shadow-lg shadow-[#473198]/20 translate-x-1' 
-                  : 'text-[#473198]/60 hover:bg-[#9BF3F0]/20 hover:text-[#473198] hover:translate-x-1'}
+                  ? 'bg-primary text-white shadow-lg shadow-primary/30 translate-x-1' 
+                  : 'text-primary/60 hover:bg-secondary/30 hover:text-primary hover:translate-x-1'}
               `}
             >
-              <span className="mr-3">
-                {icons[item.iconKey] || icons.dashboard}
-              </span>
-              {item.label}
+              {({ isActive }) => (
+                <>
+                  <span className={`mr-3 transition-all duration-300 ${isActive ? 'scale-110 opacity-100' : 'opacity-70'}`}>
+                    {icons[item.iconKey] || icons.dashboard}
+                  </span>
+                  {item.label}
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
       </div>
       
-      <div className="px-6 py-6 mt-auto border-t border-[#9BF3F0]/20 bg-white/40 backdrop-blur-sm">
+      <div className="px-6 py-6 mt-auto border-t border-secondary/20 bg-white/40 dark:bg-surface/40 backdrop-blur-sm">
         <div className="flex items-center space-x-3 group">
-          <div className="w-10 h-10 rounded-2xl bg-[#9BF3F0] border-2 border-white shadow-sm flex items-center justify-center overflow-hidden">
-            <svg className="w-6 h-6 text-[#473198]/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <div className="w-10 h-10 rounded-2xl bg-secondary border-2 border-white dark:border-surface shadow-sm flex items-center justify-center overflow-hidden">
+            <svg className="w-6 h-6 text-primary/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-black text-[#473198] truncate">{user?.name || 'Usuario'}</p>
-            <p className="text-[10px] text-[#473198]/50 font-bold uppercase tracking-wider">{user?.rol || 'Rol'}</p>
+            <p className="text-sm font-black text-primary truncate">{user?.name || 'Usuario'}</p>
+            <p className="text-[10px] text-primary/50 font-bold uppercase tracking-wider">{user?.rol || 'Rol'}</p>
           </div>
           <button
             onClick={onLogout}
-            className="p-2 rounded-xl text-[#473198]/30 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+            className="p-2 rounded-xl text-primary/30 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all opacity-0 group-hover:opacity-100"
             title="Cerrar sesion"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

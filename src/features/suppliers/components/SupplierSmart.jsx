@@ -91,11 +91,11 @@ const SupplierSmart = () => {
   const suppliers = data?.data?.data || data?.data || [];
 
   return (
-    <div className="p-6 bg-[#DAFFED]/20 min-h-screen">
+    <div className="p-6 bg-surface/20 min-h-screen">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-black text-[#473198]">Proveedores</h1>
-          <p className="text-[#473198]/60 mt-1">Gestion de proveedores</p>
+          <h1 className="text-3xl font-black text-primary">Proveedores</h1>
+          <p className="text-primary/60 mt-1">Gestion de proveedores</p>
         </div>
         <Button variant="primary" onClick={() => { setEditingSupplier(null); resetForm(); setShowForm(!showForm); }}>
           {showForm ? 'Cancelar' : '+ Nuevo Proveedor'}
@@ -104,14 +104,16 @@ const SupplierSmart = () => {
 
       {showForm && (
         <Card className="p-6 mb-6">
-          <h3 className="text-lg font-bold text-[#473198] mb-4">{editingSupplier ? 'Editar Proveedor' : 'Nuevo Proveedor'}</h3>
+          <h3 className="text-lg font-bold text-primary mb-4">{editingSupplier ? 'Editar Proveedor' : 'Nuevo Proveedor'}</h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold text-[#473198] mb-1">Tipo Documento</label>
+               <label className="block text-sm font-bold text-primary mb-1">Tipo Documento</label>
+
               <select
                 value={formData.tipo_documento}
                 onChange={(e) => setFormData({ ...formData, tipo_documento: e.target.value })}
-                className="w-full px-4 py-2 border border-[#9BF3F0]/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#473198]/20"
+                 className="w-full px-4 py-2 border border-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+
               >
                 <option value="">Seleccionar</option>
                 <option value="NIT">NIT</option>
@@ -120,41 +122,49 @@ const SupplierSmart = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#473198] mb-1">Numero Documento *</label>
+               <label className="block text-sm font-bold text-primary mb-1">Numero Documento *</label>
+
               <input
                 type="text"
                 required
                 value={formData.numero_documento}
                 onChange={(e) => setFormData({ ...formData, numero_documento: e.target.value })}
-                className="w-full px-4 py-2 border border-[#9BF3F0]/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#473198]/20"
+                 className="w-full px-4 py-2 border border-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+
               />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-bold text-[#473198] mb-1">Razon Social *</label>
+               <label className="block text-sm font-bold text-primary mb-1">Razon Social *</label>
+
               <input
                 type="text"
                 required
                 value={formData.razon_social_o_nombre}
                 onChange={(e) => setFormData({ ...formData, razon_social_o_nombre: e.target.value })}
-                className="w-full px-4 py-2 border border-[#9BF3F0]/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#473198]/20"
+                 className="w-full px-4 py-2 border border-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#473198] mb-1">Email</label>
+               <label className="block text-sm font-bold text-primary mb-1">Email</label>
+
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-2 border border-[#9BF3F0]/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#473198]/20"
+                 className="w-full px-4 py-2 border border-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#473198] mb-1">Telefono</label>
+               <label className="block text-sm font-bold text-primary mb-1">Telefono</label>
+
               <input
                 type="text"
                 value={formData.telefono}
                 onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
-                className="w-full px-4 py-2 border border-[#9BF3F0]/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#473198]/20"
+                 className="w-full px-4 py-2 border border-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+
               />
             </div>
             <div className="md:col-span-2">
@@ -168,14 +178,16 @@ const SupplierSmart = () => {
 
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#473198] border-t-transparent"></div>
+           <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
+
         </div>
       ) : (
         <Card className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-xs font-bold text-[#473198]/50 uppercase tracking-wider bg-[#DAFFED]/30 border-b border-[#9BF3F0]/20">
+                 <tr className="text-left text-xs font-bold text-primary/50 uppercase tracking-wider bg-surface/30 border-b border-secondary/20">
+
                   <th className="px-6 py-4">Razon Social</th>
                   <th className="px-6 py-4">NIT/Documento</th>
                   <th className="px-6 py-4">Email</th>
@@ -183,18 +195,25 @@ const SupplierSmart = () => {
                   <th className="px-6 py-4 text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#9BF3F0]/10">
+               <tbody className="divide-y divide-secondary/10">
+
                 {suppliers.length > 0 ? suppliers.map((s) => (
-                  <tr key={s.id} className="hover:bg-[#DAFFED]/30 transition-colors">
-                    <td className="px-6 py-4 font-bold text-[#473198]">{s.razon_social_o_nombre}</td>
-                    <td className="px-6 py-4 text-sm text-[#473198]/60">{s.numero_documento}</td>
-                    <td className="px-6 py-4 text-sm text-[#473198]/60">{s.email || '—'}</td>
-                    <td className="px-6 py-4 text-sm text-[#473198]/60">{s.telefono || '—'}</td>
+                   <tr key={s.id} className="hover:bg-surface/30 transition-colors">
+
+                     <td className="px-6 py-4 font-bold text-primary">{s.razon_social_o_nombre}</td>
+
+                     <td className="px-6 py-4 text-sm text-primary/60">{s.numero_documento}</td>
+
+                     <td className="px-6 py-4 text-sm text-primary/60">{s.email || '—'}</td>
+
+                     <td className="px-6 py-4 text-sm text-primary/60">{s.telefono || '—'}</td>
+
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleEdit(s)}
-                          className="p-1.5 text-[#473198]/50 hover:text-[#473198] transition-colors"
+                           className="p-1.5 text-primary/50 hover:text-primary transition-colors"
+
                           title="Editar"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -215,7 +234,8 @@ const SupplierSmart = () => {
                   </tr>
                 )) : (
                   <tr>
-                    <td colSpan="5" className="px-6 py-12 text-center text-[#473198]/40">
+                     <td colSpan="5" className="px-6 py-12 text-center text-primary/40">
+
                       No se encontraron proveedores
                     </td>
                   </tr>

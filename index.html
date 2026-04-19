@@ -5,6 +5,25 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>farmaprofront</title>
+    <script>
+      (function() {
+        try {
+          const storage = localStorage.getItem('farmapro_theme');
+          if (storage) {
+            const { state } = JSON.parse(storage);
+            if (state.theme === 'dark') {
+              document.documentElement.classList.add('dark');
+            }
+            if (state.primaryColor) document.documentElement.style.setProperty('--color-primary', state.primaryColor);
+            if (state.secondaryColor) document.documentElement.style.setProperty('--color-secondary', state.secondaryColor);
+            if (state.accentColor) document.documentElement.style.setProperty('--color-accent', state.accentColor);
+            if (state.backgroundColor) document.documentElement.style.setProperty('--color-surface', state.backgroundColor);
+          }
+        } catch (e) {
+          console.error('Failed to apply theme immediately', e);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>

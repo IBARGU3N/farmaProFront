@@ -1,9 +1,74 @@
 @import "tailwindcss";
 
 @theme {
-  --color-daffed: #DAFFED;
-  --color-9bf3f0: #9BF3F0;
-  --color-473198: #473198;
-  --color-4a0d67: #4A0D67;
-  --color-adfc92: #ADFC92;
+  /* Primary Palette */
+  --color-primary: #006875;
+  --color-primary-container: #00e5ff;
+  --color-on-primary: #ffffff;
+
+  /* Secondary Palette */
+  --color-secondary: #632ce5;
+  --color-secondary-container: #7c4dff;
+  --color-on-secondary: #ffffff;
+
+  /* Tertiary Palette */
+  --color-tertiary: #765a00;
+  --color-tertiary-container: #fec931;
+
+  /* Surface Palette */
+  --color-surface: #f7f9fb;
+  --color-surface-container-low: #f2f4f6;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-surface: #191c1e;
+  --color-on-surface-variant: #3b494c;
+
+  /* Error */
+  --color-error: #ba1a1a;
+
+  /* Typography */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-headline: "Manrope", sans-serif;
 }
+
+@layer base {
+  body {
+    @apply bg-surface text-on-surface font-sans;
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    transition: background-color 0.5s ease, color 0.5s ease;
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  /* Glassmorphism Effect from Reference */
+  .neo-glass {
+    @apply bg-surface/70 backdrop-blur-md border border-white/20 shadow-lg;
+    background-color: rgba(247, 249, 251, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  }
+
+  .bg-clinical-ether {
+    background: radial-gradient(circle at 0% 0%, rgba(0, 229, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(99, 44, 229, 0.1) 0%, transparent 50%);
+  }
+}
+
+/* Dark Mode Overrides */
+.dark body {
+  --color-surface: #000000;
+  --color-surface-container-low: #0a0a0a;
+  --color-surface-container-lowest: #050505;
+  --color-on-surface: #f7f9fb;
+  --color-on-surface-variant: #a0a8ac;
+
+  --color-error: #ff5449;
+}
+
+.dark .neo-glass {
+  background-color: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+

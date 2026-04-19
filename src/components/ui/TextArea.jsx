@@ -2,9 +2,8 @@ import React, { useState, forwardRef } from 'react';
 import { motion } from 'framer-motion';
 import { SecurityUtils } from '../../utils/security';
 
-export const TextInput = forwardRef(({
+export const TextArea = forwardRef(({
   label,
-  type = 'text',
   placeholder = '',
   error,
   securityPattern,
@@ -68,21 +67,19 @@ export const TextInput = forwardRef(({
 
     if (onChange) onChange(patchedEvent);
     if (rest.onChange) rest.onChange(patchedEvent);
-    if (onPaste) onPaste(patchedEvent);
   };
 
   const handleKeyDown = (event) => {
     const char = event.key;
-    const blocklist = [';', '<', '>', '/'];
 
-    if (blocklist.includes(char) && type !== 'password') {
+    const blockedKeys = [';', '<', '>', '/'];
+    if (blockedKeys.includes(char)) {
       event.preventDefault();
       return;
     }
 
     if (allowedChars && char.length === 1 && !allowedChars.test(char)) {
       event.preventDefault();
-      return;
     }
 
     if (onKeyDown) onKeyDown(event);
@@ -107,24 +104,23 @@ export const TextInput = forwardRef(({
         {label}
       </motion.label>
       <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} className="relative group">
-        <input
+        <textarea
           id={label.toLowerCase().replace(/\s+/g, '-')}
-          type={type}
-          placeholder={placeholder}
           ref={ref}
+          placeholder={placeholder}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           onChange={handleChange}
           onPaste={handlePaste}
           onKeyDown={handleKeyDown}
-          maxLength={maxLength}
-          className={`w-full px-4 py-2 bg-[#DAFFED]/20 border-2 rounded-xl transition-all duration-200 ${
+          className={`w-full min-h-[120px] px-4 py-3 bg-[#DAFFED]/20 border-2 rounded-xl transition-all duration-200 ${
             error
               ? 'border-red-400 focus:border-red-500 focus:ring-red-100'
               : isFocused
                 ? 'border-[#9BF3F0] ring-4 ring-[#9BF3F0]/20'
                 : 'border-[#9BF3F0]/30 group-hover:border-[#9BF3F0]/60'
           } placeholder:text-[#473198]/30 text-[#473198] focus:outline-none`}
+          maxLength={maxLength}
           {...rest}
         />
         {maxLength && (
@@ -150,6 +146,4 @@ export const TextInput = forwardRef(({
   );
 });
 
-TextInput.displayName = 'TextInput';
-
-
+TextArea.displayName = 'TextArea';

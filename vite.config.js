@@ -21,7 +21,7 @@ export default defineConfig({
         passes: 2,
       },
       mangle: {
-        toplevel: false,
+        toplevel: true,
         properties: false,
       },
       format: {

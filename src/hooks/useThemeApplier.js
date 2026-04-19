@@ -1,21 +1,30 @@
 import { useEffect } from 'react';
-import { useThemeStore } from '../store/themeStore';
+import useUIStore from '../store/uiStore';
 
 export function useThemeApplier() {
-  const { primaryColor, secondaryColor, accentColor, backgroundColor } = useThemeStore();
+  const { theme, primaryColor, secondaryColor, accentColor, backgroundColor } = useUIStore();
 
   useEffect(() => {
     const root = document.documentElement;
-    root.style.setProperty('--color-473198', primaryColor);
-    root.style.setProperty('--color-9bf3f0', secondaryColor);
-    root.style.setProperty('--color-adfc92', accentColor);
-    root.style.setProperty('--color-daffed', backgroundColor);
+    
+    // Sync dark class with store state
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
 
-    // Compute a darker shade for --color-4a0d67 (primary-dark)
+    // Set semantic CSS variables based on current custom colors
+    root.style.setProperty('--color-primary', primaryColor);
+    root.style.setProperty('--color-secondary', secondaryColor);
+    root.style.setProperty('--color-accent', accentColor);
+    root.style.setProperty('--color-surface', backgroundColor);
+
+    // Compute a darker shade for on-primary or variants if needed
     const hex = primaryColor.replace('#', '');
     const r = Math.max(0, parseInt(hex.substring(0, 2), 16) - 30);
     const g = Math.max(0, parseInt(hex.substring(2, 4), 16) - 30);
     const b = Math.max(0, parseInt(hex.substring(4, 6), 16) - 30);
-    root.style.setProperty('--color-4a0d67', `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`);
-  }, [primaryColor, secondaryColor, accentColor, backgroundColor]);
+    root.style.setProperty('--color-primary-dark', `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`);
+  }, [theme, primaryColor, secondaryColor, accentColor, backgroundColor]);
 }

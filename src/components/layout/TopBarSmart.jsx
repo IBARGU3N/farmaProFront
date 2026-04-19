@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { authService } from '../../services/auth/authService';
 import { authStorage } from '../../lib/authStorage';
 import { useAuthStore } from '../../store/authStore';
-import { useThemeStore } from '../../store/themeStore';
+import useUIStore from '../../store/uiStore';
 import { TopBar } from './TopBar';
 import { AlertBell } from '../ui/AlertBell';
 
 export const TopBarSmart = () => {
   const navigate = useNavigate();
   const { user, logout: logoutStore } = useAuthStore();
-  const { isDark, toggleDark } = useThemeStore();
+  const { theme, toggleTheme } = useUIStore();
   const [currentTime, setCurrentTime] = useState('');
 
   useEffect(() => {
@@ -48,8 +48,8 @@ export const TopBarSmart = () => {
       user={user}
       currentTime={currentTime}
       onLogout={handleLogout}
-      isDark={isDark}
-      onToggleDark={toggleDark}
+      isDark={theme === 'dark'}
+      onToggleDark={toggleTheme}
       AlertBellComponent={AlertBell}
     />
   );

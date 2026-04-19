@@ -1,12 +1,12 @@
 export const TopBar = ({ user, currentTime, onLogout, isDark, onToggleDark, AlertBellComponent }) => {
   return (
-    <header className="bg-white/60 backdrop-blur-md border-b border-[#9BF3F0]/30 h-16 flex items-center justify-between px-8 sticky top-0 z-20">
+    <header className="bg-surface/60 backdrop-blur-md border-b border-primary/20 h-16 flex items-center justify-between px-8 sticky top-0 z-20 transition-colors duration-500">
       <div className="flex items-center gap-4">
-          <div className="text-[#473198]/40 font-bold text-[10px] uppercase tracking-[0.2em] flex items-center gap-2">
-          Sistema 
-          <span className="w-1 h-1 rounded-full bg-[#ADFC92] opacity-100" /> 
-          Activo
-        </div>
+          <div className="text-on-surface-variant font-bold text-[10px] uppercase tracking-[0.2em] flex items-center gap-2">
+           Sistema 
+           <span className="w-1 h-1 rounded-full bg-primary opacity-100" /> 
+           Activo
+          </div>
       </div>
       
       <div className="flex items-center space-x-4">
@@ -14,7 +14,7 @@ export const TopBar = ({ user, currentTime, onLogout, isDark, onToggleDark, Aler
         
         <button
           onClick={onToggleDark}
-          className="p-2 text-[#473198]/60 hover:text-[#473198] transition-colors"
+          className="p-2 text-on-surface-variant hover:text-primary transition-colors"
           title={isDark ? 'Modo claro' : 'Modo oscuro'}
         >
           {isDark ? (
@@ -28,21 +28,21 @@ export const TopBar = ({ user, currentTime, onLogout, isDark, onToggleDark, Aler
           )}
         </button>
         
-        <div className="h-8 w-px bg-[#473198]/10" />
+        <div className="h-8 w-px bg-on-surface-variant/10" />
         
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <p className="text-xs font-black text-[#473198] uppercase leading-none mb-1">{user?.name || 'Usuario'}</p>
-            <p className="text-[10px] text-[#473198]/40 font-bold tracking-tighter">{user?.rol || 'Rol'} · {currentTime}</p>
+            <p className="text-xs font-black text-primary uppercase leading-none mb-1">{user?.name || 'Usuario'}</p>
+            <p className="text-[10px] text-on-surface-variant font-bold tracking-tighter">{user?.rol || 'Rol'} · {currentTime}</p>
           </div>
-          <div className="w-10 h-10 rounded-2xl bg-[#DAFFED] border-2 border-[#9BF3F0]/20 flex items-center justify-center text-[#473198] shadow-sm">
+          <div className="w-10 h-10 rounded-2xl bg-surface-container-low border-2 border-primary/20 flex items-center justify-center text-primary shadow-sm">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
           <button
             onClick={onLogout}
-            className="p-2 rounded-xl text-[#473198]/30 hover:text-red-500 hover:bg-red-50 transition-all"
+            className="p-2 rounded-xl text-on-surface-variant/30 hover:text-error hover:bg-error/10 transition-all"
             title="Cerrar sesion"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -54,3 +54,4 @@ export const TopBar = ({ user, currentTime, onLogout, isDark, onToggleDark, Aler
     </header>
   );
 };
+
