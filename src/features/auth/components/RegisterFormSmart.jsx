@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, Link } from 'react-router-dom';
@@ -18,6 +18,7 @@ export const RegisterFormSmart = () => {
     handleSubmit,
     watch,
     setError,
+    reset,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -28,6 +29,17 @@ export const RegisterFormSmart = () => {
       password_confirmation: '',
     },
   });
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        reset();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [reset]);
 
   const { mutate: registerUser, isLoading } = useMutation({
     mutationFn: authService.register,
