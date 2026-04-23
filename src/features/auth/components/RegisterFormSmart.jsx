@@ -44,36 +44,26 @@ export const RegisterFormSmart = () => {
   const { mutate: registerUser, isLoading } = useMutation({
     mutationFn: authService.register,
     onSuccess: (response) => {
-      if (response.data.success) {
-        const payload = response.data.data;
-        authStorage.saveTokens(payload.access_token, payload.refresh_token);
-        useAuthStore.getState().setUser(payload.user);
+      if (response?.user) {
+        useAuthStore.getState().setUser(response.user);
         queryClient.invalidateQueries({ queryKey: ['auth'] });
         navigate('/dashboard', { replace: true });
         showToast('Cuenta creada con éxito. ¡Bienvenido a FarmaPro!', 'success');
       }
     },
     onError: (err) => {
-      const serverMessage = err?.response?.data?.message;
-      const fieldErrors = err?.response?.data?.errors;
-
-      if (fieldErrors) {
-        Object.entries(fieldErrors).forEach(([field, messages]) => {
-          if (Array.isArray(messages) && messages.length > 0) {
-            setError(field, {
-              type: 'server',
-              message: messages[0],
-            });
-          }
-        });
-      } else {
-        showToast(serverMessage || 'Error al registrar usuario. Por favor, intente nuevamente.', 'error');
-      }
+      showToast(err.message || 'Error al registrar usuario. Por favor, intente nuevamente.', 'error');
     },
   });
 
   const onSubmit = (data) => {
-    registerUser(data);
+    // Map form data to service expectations
+    const userData = {
+      email: data.email,
+      password: data.password,
+      nombre_completo: data.name,
+    };
+    registerUser(userData);
   };
 
   return (
