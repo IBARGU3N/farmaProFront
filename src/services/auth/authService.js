@@ -1,25 +1,42 @@
-import api from '../api';
+import { supabase } from '../../lib/supabase';
 
 export const authService = {
   // Login user
-  login: (credentials) => api.post('/auth/login', credentials),
+  login: async (credentials) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: credentials.email,
+      password: credentials.password,
+    });
+    if (error) throw error;
+    return data;
+  },
   
   // Register new user
-  register: (userData) => api.post('/auth/register', userData),
+  register: async (userData) => {
+    const { data, error } = await supabase.auth.signUp({
+      email: userData.email,
+      password: userData.password,
+      options: {
+        data: {
+          full_name: userData.nombre_completo,
+          rol: userData.rol || 'usuario',
+        },
+      },
+    });
+    if (error) throw error;
+    return data;
+  },
   
-  // Logout user (invalidate token)
-  logout: () => api.post('/auth/logout'),
+  // Logout user
+  logout: async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  },
   
-  // Refresh access token using refresh token
-  refresh: (refreshToken) => api.post('/auth/refresh', { refresh_token: refreshToken }),
-  
-  // Send password reset link
-  forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
-  
-  // Reset password with token
-  resetPassword: ({ token, email, password, password_confirmation }) => 
-    api.post('/auth/reset-password', { token, email, password, password_confirmation }),
-    
-  // Check if user is authenticated (optional endpoint)
-  checkAuth: () => api.get('/auth/me'), // We'll need to implement this on backend later
+  // Check if user is authenticated
+  checkAuth: async () => {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error) throw error;
+    return user;
+  },
 };
