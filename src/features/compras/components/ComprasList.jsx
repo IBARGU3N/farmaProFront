@@ -2,7 +2,7 @@ import React from 'react';
 import { Card } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
 import { Search, Plus, Eye, Edit, Trash2 } from 'lucide-react';
-import TextInput from '../../../components/ui/TextInput';
+import { TextInput } from '../../../components/ui/TextInput';
 import { ShortcutBadge } from '../../../components/ui/ShortcutBadge';
 
 const ComprasList = ({ 

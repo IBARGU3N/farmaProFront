@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from '../../../components/ui/Button';
 import { Card } from '../../../components/ui/Card';
-import TextInput from '../../../components/ui/TextInput';
-import Select from '../../../components/ui/Select';
-import TextArea from '../../../components/ui/TextArea';
+import { TextInput } from '../../../components/ui/TextInput';
+import { Select } from '../../../components/ui/Select';
+import { TextArea } from '../../../components/ui/TextArea';
 import { ShortcutBadge } from '../../../components/ui/ShortcutBadge';
 import { Plus, Trash2, Save, X } from 'lucide-react';
 
