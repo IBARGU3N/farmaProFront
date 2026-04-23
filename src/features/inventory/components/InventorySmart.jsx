@@ -7,6 +7,9 @@ import { LotManagerSmart } from './LotManagerSmart';
 import { InventoryFilters } from './InventoryFilters';
 import { Card } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
+import ErrorBoundary from '../../../components/common/ErrorBoundary';
+import { ShortcutBadge } from '../../../components/ui/ShortcutBadge';
+import { useKeyboardShortcuts } from '../../../hooks/useKeyboardShortcuts';
 import toast from 'react-hot-toast';
 
 const InventorySmart = () => {
@@ -76,35 +79,59 @@ const InventorySmart = () => {
     return { text: 'Disponible', class: 'bg-green-100 text-green-700' };
   };
 
+  useKeyboardShortcuts([
+    {
+      key: 'n',
+      alt: true,
+      action: () => {
+        setEditingProduct(null);
+        setShowProductForm(true);
+        toast('Formulario de nuevo producto abierto', { icon: '📝', duration: 1200 });
+      },
+      label: 'Nuevo producto',
+    },
+    {
+      key: 'Escape',
+      action: () => {
+        if (showProductForm) {
+          handleCloseForm();
+        }
+      },
+      label: 'Cerrar formulario',
+    },
+  ]);
+
   return (
-    <div className="p-6 bg-[#DAFFED]/20 min-h-screen">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-black text-[#473198]">Inventario</h1>
-          <p className="text-[#473198]/60 mt-1">Gestion de productos y lotes</p>
+    <ErrorBoundary>
+      <div className="p-6 bg-surface/20 min-h-screen">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-black text-primary">Inventario</h1>
+            <p className="text-primary/60 mt-1">Gestion de productos y lotes</p>
+          </div>
+          <Button variant="primary" onClick={() => { setEditingProduct(null); setShowProductForm(true); }} title="Nuevo Producto [Alt+N]">
+            <span>+ Nuevo Producto</span> <ShortcutBadge keys="Alt+N" />
+          </Button>
         </div>
-        <Button variant="primary" onClick={() => { setEditingProduct(null); setShowProductForm(true); }}>
-          + Nuevo Producto
-        </Button>
-      </div>
+
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <Card className="p-4">
-          <p className="text-xs text-[#473198]/50 font-bold uppercase">Total Productos</p>
-          <p className="text-2xl font-black text-[#473198]">{summary.totals?.total_products || 0}</p>
+          <p className="text-xs text-primary/50 font-bold uppercase">Total Productos</p>
+          <p className="text-2xl font-black text-primary">{summary.totals?.total_products || 0}</p>
         </Card>
         <Card className="p-4">
-          <p className="text-xs text-[#473198]/50 font-bold uppercase">Total Lotes</p>
-          <p className="text-2xl font-black text-[#473198]">{summary.totals?.total_lots || 0}</p>
+          <p className="text-xs text-primary/50 font-bold uppercase">Total Lotes</p>
+          <p className="text-2xl font-black text-primary">{summary.totals?.total_lots || 0}</p>
         </Card>
         <Card className="p-4">
-          <p className="text-xs text-[#473198]/50 font-bold uppercase">Unidades en Stock</p>
-          <p className="text-2xl font-black text-[#473198]">{summary.totals?.total_stock_units || 0}</p>
+          <p className="text-xs text-primary/50 font-bold uppercase">Unidades en Stock</p>
+          <p className="text-2xl font-black text-primary">{summary.totals?.total_stock_units || 0}</p>
         </Card>
         <Card className="p-4">
-          <p className="text-xs text-[#473198]/50 font-bold uppercase">Alertas</p>
+          <p className="text-xs text-primary/50 font-bold uppercase">Alertas</p>
           <p className="text-2xl font-black text-red-600">{(summary.alerts?.low_stock_count || 0) + (summary.alerts?.expiring_soon_count || 0) + (summary.alerts?.expired_count || 0)}</p>
         </Card>
       </div>
@@ -126,14 +153,14 @@ const InventorySmart = () => {
       {/* Products Table */}
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#473198] border-t-transparent"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
         </div>
       ) : (
         <Card className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-xs font-bold text-[#473198]/50 uppercase tracking-wider bg-[#DAFFED]/30 border-b border-[#9BF3F0]/20">
+                <tr className="text-left text-xs font-bold text-primary/50 uppercase tracking-wider bg-surface/30 border-b border-surface-container-low/20">
                   <th className="px-6 py-4 w-10"></th>
                   <th className="px-6 py-4">Producto</th>
                   <th className="px-6 py-4">Codigo</th>
@@ -144,34 +171,34 @@ const InventorySmart = () => {
                   <th className="px-6 py-4 text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#9BF3F0]/10">
+              <tbody className="divide-y divide-surface-container-low/10">
                 {products.length > 0 ? products.map((p) => {
                   const stock = p.total_stock || 0;
                   const badge = getStockBadge(stock);
                   const isExpanded = expandedProductId === p.id;
                   return (
                     <>
-                      <tr key={p.id} className="hover:bg-[#DAFFED]/30 transition-colors cursor-pointer" onClick={() => setExpandedProductId(isExpanded ? null : p.id)}>
+                      <tr key={p.id} className="hover:bg-surface/30 transition-colors cursor-pointer" onClick={() => setExpandedProductId(isExpanded ? null : p.id)}>
                         <td className="px-6 py-4">
-                          <svg className={`w-4 h-4 text-[#473198]/40 transition-transform ${isExpanded ? 'rotate-90' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <svg className={`w-4 h-4 text-primary/40 transition-transform ${isExpanded ? 'rotate-90' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                           </svg>
                         </td>
-                        <td className="px-6 py-4 font-bold text-[#473198]">{p.nombre}</td>
-                        <td className="px-6 py-4 text-sm text-[#473198]/60">{p.codigo_barras || '—'}</td>
-                        <td className="px-6 py-4 text-sm text-[#473198]/60">{p.categoria || '—'}</td>
-                        <td className="px-6 py-4 text-sm text-[#473198]/60">{p.laboratorio?.nombre || '—'}</td>
+                        <td className="px-6 py-4 font-bold text-primary">{p.nombre}</td>
+                        <td className="px-6 py-4 text-sm text-primary/60">{p.codigo_barras || '—'}</td>
+                        <td className="px-6 py-4 text-sm text-primary/60">{p.categoria || '—'}</td>
+                        <td className="px-6 py-4 text-sm text-primary/60">{p.laboratorio?.nombre || '—'}</td>
                         <td className="px-6 py-4 text-center">
                           <span className={`px-3 py-1 rounded-full text-xs font-bold ${badge.class}`}>
                             {stock}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-sm text-[#473198]/60">{p.porcentaje_impuesto}%</td>
+                        <td className="px-6 py-4 text-sm text-primary/60">{p.porcentaje_impuesto}%</td>
                         <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => handleEdit(p)}
-                              className="p-1.5 text-[#473198]/50 hover:text-[#473198] transition-colors"
+                              className="p-1.5 text-primary/50 hover:text-primary transition-colors"
                             >
                               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -190,7 +217,7 @@ const InventorySmart = () => {
                       </tr>
                       {isExpanded && (
                         <tr key={`${p.id}-lots`}>
-                          <td colSpan="8" className="px-6 py-4 bg-[#DAFFED]/10">
+                          <td colSpan="8" className="px-6 py-4 bg-surface/10">
                             <LotManagerSmart productId={p.id} />
                           </td>
                         </tr>
@@ -199,7 +226,7 @@ const InventorySmart = () => {
                   );
                 }) : (
                   <tr>
-                    <td colSpan="8" className="px-6 py-12 text-center text-[#473198]/40">
+                    <td colSpan="8" className="px-6 py-12 text-center text-primary/40">
                       No se encontraron productos
                     </td>
                   </tr>
@@ -210,15 +237,15 @@ const InventorySmart = () => {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between px-6 py-4 border-t border-[#9BF3F0]/20">
-              <p className="text-sm text-[#473198]/50">
+            <div className="flex items-center justify-between px-6 py-4 border-t border-surface-container-low/20">
+              <p className="text-sm text-primary/50">
                 Mostrando {((page - 1) * perPage) + 1} - {Math.min(page * perPage, totalItems)} de {totalItems}
               </p>
               <div className="flex gap-2">
                 <button
                   onClick={() => setPage(Math.max(1, page - 1))}
                   disabled={page === 1}
-                  className="px-3 py-1 text-sm font-bold text-[#473198] border border-[#9BF3F0]/30 rounded-lg disabled:opacity-30 hover:bg-[#9BF3F0]/10 transition-colors"
+                  className="px-3 py-1 text-sm font-bold text-primary border border-surface-container-low/30 rounded-lg disabled:opacity-30 hover:bg-surface-container-low/10 transition-colors"
                 >
                   Anterior
                 </button>
@@ -239,8 +266,8 @@ const InventorySmart = () => {
                       onClick={() => setPage(pageNum)}
                       className={`w-8 h-8 text-sm font-bold rounded-lg transition-colors ${
                         page === pageNum
-                          ? 'bg-[#473198] text-white'
-                          : 'text-[#473198] hover:bg-[#9BF3F0]/10'
+                          ? 'bg-primary text-white'
+                          : 'text-primary hover:bg-surface-container-low/10'
                       }`}
                     >
                       {pageNum}
@@ -250,7 +277,7 @@ const InventorySmart = () => {
                 <button
                   onClick={() => setPage(Math.min(totalPages, page + 1))}
                   disabled={page === totalPages}
-                  className="px-3 py-1 text-sm font-bold text-[#473198] border border-[#9BF3F0]/30 rounded-lg disabled:opacity-30 hover:bg-[#9BF3F0]/10 transition-colors"
+                  className="px-3 py-1 text-sm font-bold text-primary border border-surface-container-low/30 rounded-lg disabled:opacity-30 hover:bg-surface-container-low/10 transition-colors"
                 >
                   Siguiente
                 </button>
@@ -267,6 +294,7 @@ const InventorySmart = () => {
         editingProduct={editingProduct}
       />
     </div>
+    </ErrorBoundary>
   );
 };
 

@@ -14,11 +14,19 @@ export function useThemeApplier() {
       root.classList.remove('dark');
     }
 
-    // Set semantic CSS variables based on current custom colors
-    root.style.setProperty('--color-primary', primaryColor);
-    root.style.setProperty('--color-secondary', secondaryColor);
-    root.style.setProperty('--color-accent', accentColor);
-    root.style.setProperty('--color-surface', backgroundColor);
+    if (theme === 'dark') {
+      root.style.removeProperty('--sys-surface');
+      root.style.removeProperty('--sys-surface-container-low');
+      root.style.removeProperty('--sys-surface-container-lowest');
+    } else {
+      root.style.setProperty('--sys-surface', backgroundColor);
+      // Optional: compute lighter shades for other surfaces if needed, or leave to fallback
+    }
+
+    // Set semantic CSS variables based on current custom colors (these override dark/light defaults)
+    root.style.setProperty('--sys-primary', primaryColor);
+    root.style.setProperty('--sys-secondary', secondaryColor);
+    root.style.setProperty('--sys-tertiary', accentColor);
 
     // Compute a darker shade for on-primary or variants if needed
     const hex = primaryColor.replace('#', '');

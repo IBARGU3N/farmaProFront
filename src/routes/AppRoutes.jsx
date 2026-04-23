@@ -18,10 +18,12 @@ const POSModule = lazy(() => import('../features/pos/POSRouter'));
 const InventoryModule = lazy(() => import('../features/inventory/InventoryRouter'));
 const ClientsModule = lazy(() => import('../features/clients/ClientRouter'));
 const SuppliersModule = lazy(() => import('../features/suppliers/SupplierRouter'));
+const ComprasModule = lazy(() => import('../features/compras/ComprasRouter'));
 const InvoicesModule = lazy(() => import('../features/invoices/InvoiceRouter'));
 const ReportsModule = lazy(() => import('../features/reports/ReportRouter'));
 const SettingsModule = lazy(() => import('../features/settings/SettingsRouter'));
 const UsersModule = lazy(() => import('../features/users/UsersRouter'));
+const CajasModule = lazy(() => import('../features/cajas/CajaRouter'));
 
 const AppRoutes = () => {
   return (
@@ -41,11 +43,14 @@ const AppRoutes = () => {
           <Route path="/pos/*" element={<POSModule />} />
           <Route path="/inventory/*" element={<InventoryModule />} />
           <Route path="/clients/*" element={<ClientsModule />} />
-          <Route path="/suppliers/*" element={<SuppliersModule />} />
-          <Route path="/invoices/*" element={<InvoicesModule />} />
+           <Route path="/suppliers/*" element={<SuppliersModule />} />
+           <Route path="/compras/*" element={<ComprasModule />} />
+           <Route path="/invoices/*" element={<InvoicesModule />} />
+
           <Route path="/reports/*" element={<ReportsModule />} />
           <Route path="/settings/*" element={<SettingsModule />} />
           <Route path="/users/*" element={<UsersModule />} />
+          <Route path="/cajas/*" element={<CajasModule />} />
         </Route>
 
         {/* Catch all */}

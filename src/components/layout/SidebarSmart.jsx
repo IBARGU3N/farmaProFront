@@ -11,6 +11,7 @@ const navItems = [
   { to: '/clients', end: true, iconKey: 'clients', label: 'Clientes' },
   { to: '/suppliers', end: true, iconKey: 'suppliers', label: 'Proveedores' },
   { to: '/invoices', end: true, iconKey: 'invoices', label: 'Facturas' },
+  { to: '/cajas', end: true, iconKey: 'pos', label: 'Cajas' },
   { to: '/reports', end: true, iconKey: 'reports', label: 'Reportes' },
   { to: '/settings', end: true, iconKey: 'settings', label: 'Configuracion' },
   { to: '/users', end: true, iconKey: 'users', label: 'Usuarios' },

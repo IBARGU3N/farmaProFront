@@ -13,10 +13,10 @@ export const RequireAuth = ({ children }) => {
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#DAFFED]">
+      <div className="flex h-screen items-center justify-center bg-surface-container-low dark:bg-surface-container-lowest">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-[#9BF3F0] border-t-[#473198] rounded-full animate-spin" />
-          <p className="text-[#473198] font-black text-xs uppercase tracking-widest animate-pulse">Checking Auth...</p>
+          <div className="w-12 h-12 border-4 border-secondary border-t-[#473198] rounded-full animate-spin" />
+          <p className="text-primary font-black text-xs uppercase tracking-widest animate-pulse">Checking Auth...</p>
         </div>
       </div>
     );

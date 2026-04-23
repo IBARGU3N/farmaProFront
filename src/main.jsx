@@ -21,16 +21,17 @@ ReactDOM.createRoot(document.getElementById('app')).render(
       toastOptions={{
         duration: 4000,
         style: {
-          background: '#473198',
-          color: '#fff',
+          background: 'var(--sys-surface-container-low)',
+          color: 'var(--sys-on-surface)',
+          border: '1px solid var(--sys-primary)',
           borderRadius: '12px',
           fontWeight: '600',
           fontSize: '14px',
         },
         success: {
           iconTheme: {
-            primary: '#ADFC92',
-            secondary: '#473198',
+            primary: 'var(--sys-primary)',
+            secondary: 'var(--sys-on-primary)',
           },
         },
         error: {

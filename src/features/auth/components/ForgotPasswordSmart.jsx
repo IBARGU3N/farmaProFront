@@ -63,7 +63,7 @@ export const ForgotPasswordSmart = () => {
       <div className="mt-8 text-center">
         <Link 
           to="/login" 
-          className="text-[#473198]/60 hover:text-[#473198] text-sm font-bold transition-all duration-200"
+           className="text-primary/60 hover:text-primary text-sm font-bold transition-all duration-200"
         >
           &larr; Volver al inicio de sesión
         </Link>

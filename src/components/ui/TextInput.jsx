@@ -34,11 +34,14 @@ export const TextInput = forwardRef(({
   };
 
   const handleChange = (event) => {
-    const nextValue = normalizeValue(event.target.value);
+    const { name, value } = event.target;
+    const nextValue = normalizeValue(value);
+    
     const patchedEvent = {
       ...event,
       target: {
         ...event.target,
+        name,
         value: nextValue,
       },
     };
@@ -96,20 +99,24 @@ export const TextInput = forwardRef(({
       transition={{ duration: 0.3 }}
       className="mb-4"
     >
-      <motion.label
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        htmlFor={label.toLowerCase().replace(/\s+/g, '-')}
-        className={`block text-sm font-medium mb-1 transition-colors duration-200 ${
-          isFocused ? 'text-[#4A0D67]' : 'text-[#473198]'
-        }`}
-      >
-        {label}
-      </motion.label>
+       {label && (
+         <motion.label
+           whileHover={{ scale: 1.02 }}
+           whileTap={{ scale: 0.98 }}
+           htmlFor={label ? label.toLowerCase().replace(/\s+/g, '-') : undefined}
+           className={`block text-sm font-medium mb-1 transition-colors duration-200 ${
+             isFocused ? 'text-primary' : 'text-primary/70'
+           }`}
+         >
+           {label}
+         </motion.label>
+       )}
+
       <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} className="relative group">
-        <input
-          id={label.toLowerCase().replace(/\s+/g, '-')}
-          type={type}
+          <input
+            id={label ? label.toLowerCase().replace(/\s+/g, '-') : undefined}
+            type={type}
+
           placeholder={placeholder}
           ref={ref}
           onFocus={() => setIsFocused(true)}
@@ -118,17 +125,18 @@ export const TextInput = forwardRef(({
           onPaste={handlePaste}
           onKeyDown={handleKeyDown}
           maxLength={maxLength}
-          className={`w-full px-4 py-2 bg-[#DAFFED]/20 border-2 rounded-xl transition-all duration-200 ${
+          className={`w-full px-4 py-2 bg-surface-container-low/20 border-2 rounded-xl transition-all duration-200 ${
             error
               ? 'border-red-400 focus:border-red-500 focus:ring-red-100'
-              : isFocused
-                ? 'border-[#9BF3F0] ring-4 ring-[#9BF3F0]/20'
-                : 'border-[#9BF3F0]/30 group-hover:border-[#9BF3F0]/60'
-          } placeholder:text-[#473198]/30 text-[#473198] focus:outline-none`}
+               : isFocused
+                 ? 'border-secondary ring-4 ring-secondary/20'
+                 : 'border-secondary/30 group-hover:border-secondary/60'
+
+          } placeholder:text-primary/30 text-primary focus:outline-none`}
           {...rest}
         />
         {maxLength && (
-          <div className="mt-2 text-right text-[11px] text-[#473198]/70">
+          <div className="mt-2 text-right text-[11px] text-primary/70">
             {currentLength}/{maxLength}
           </div>
         )}

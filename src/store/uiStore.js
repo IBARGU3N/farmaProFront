@@ -5,16 +5,17 @@ import { preferenceService } from '../services/preferenceService';
 
 export const syncThemeToCSS = (state) => {
   const root = document.documentElement;
-  root.style.setProperty('--color-primary', state.primaryColor);
-  root.style.setProperty('--color-secondary', state.secondaryColor);
-  root.style.setProperty('--color-accent', state.accentColor);
-  root.style.setProperty('--color-surface', state.backgroundColor);
   
   if (state.theme === 'dark') {
     root.classList.add('dark');
   } else {
     root.classList.remove('dark');
   }
+
+  root.style.setProperty('--brand-primary', state.primaryColor);
+  root.style.setProperty('--brand-secondary', state.secondaryColor);
+  root.style.setProperty('--brand-accent', state.accentColor);
+  root.style.setProperty('--brand-bg', state.backgroundColor);
 };
 
 export const bootstrapTheme = () => {

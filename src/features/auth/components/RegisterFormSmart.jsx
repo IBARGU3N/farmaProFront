@@ -77,11 +77,11 @@ export const RegisterFormSmart = () => {
         isLoading={isLoading}
       />
       <div className="mt-8 text-center">
-        <p className="text-[#473198]/40 text-xs font-bold uppercase tracking-widest">
-          ¿Ya tienes una cuenta?{' '}
-          <Link 
-            to="/login" 
-            className="text-[#473198] hover:text-[#4A0D67] border-b-2 border-[#9BF3F0] transition-all duration-200"
+         <p className="text-primary/40 text-xs font-bold uppercase tracking-widest">
+           ¿Ya tienes una cuenta?{' '}
+           <Link 
+             to="/login" 
+             className="text-primary hover:text-on-surface border-b-2 border-surface-container-low transition-all duration-200"
           >
             Inicia sesión aquí
           </Link>

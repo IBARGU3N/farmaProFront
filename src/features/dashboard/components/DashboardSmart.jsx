@@ -16,14 +16,14 @@ import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 const StatCard = ({ title, value, subtitle, icon }) => (
-  <div className="bg-white/80 backdrop-blur-md border border-[#9BF3F0]/30 rounded-3xl shadow-xl shadow-[#473198]/5 p-6 hover:shadow-2xl hover:shadow-[#473198]/10 transition-all duration-300 hover:-translate-y-1">
+  <div className="bg-surface/80 backdrop-blur-md border border-primary-container/30 rounded-3xl shadow-xl shadow-primary/5 p-6 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1">
     <div className="flex items-start justify-between">
       <div>
-        <p className="text-xs font-bold text-[#473198]/50 uppercase tracking-wider">{title}</p>
-        <p className="text-3xl font-black text-[#473198] mt-2">{value}</p>
-        {subtitle && <p className="text-xs text-[#473198]/40 mt-1">{subtitle}</p>}
+        <p className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">{title}</p>
+        <p className="text-3xl font-black text-primary mt-2">{value}</p>
+        {subtitle && <p className="text-xs text-on-surface-variant/60 mt-1">{subtitle}</p>}
       </div>
-      <div className="text-[#473198]/40">
+      <div className="text-on-surface-variant/60">
         {icon}
       </div>
     </div>
@@ -82,31 +82,31 @@ const DashboardSmart = () => {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#473198] border-t-transparent mx-auto"></div>
-          <p className="text-[#473198]/60 mt-4 font-bold">Cargando dashboard...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent mx-auto"></div>
+          <p className="text-on-surface-variant mt-4 font-bold">Cargando dashboard...</p>
         </div>
       </div>
     );
   }
-
+  
   if (statsError) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
-          <p className="text-red-600 font-bold text-lg">Error al cargar el dashboard</p>
-          <p className="text-[#473198]/60 mt-2">Por favor, intenta de nuevo mas tarde</p>
+          <p className="text-error font-bold text-lg">Error al cargar el dashboard</p>
+          <p className="text-on-surface-variant mt-2">Por favor, intenta de nuevo mas tarde</p>
         </div>
       </div>
     );
   }
-
+  
   return (
-    <div className="p-6 bg-[#DAFFED]/20 min-h-screen">
+    <div className="p-6 bg-surface-container-low/20 min-h-screen">
       <div className="mb-8">
-        <h1 className="text-3xl font-black text-[#473198]">
+        <h1 className="text-3xl font-black text-primary">
           Hola, {user?.name || stats?.user?.name || 'Administrador'}
         </h1>
-        <p className="text-[#473198]/60 mt-1">Resumen del sistema FarmaPro</p>
+        <p className="text-primary/60 mt-1">Resumen del sistema FarmaPro</p>
       </div>
 
       {/* KPI Cards */}
@@ -190,68 +190,70 @@ const DashboardSmart = () => {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Sales Chart */}
-        <div className="bg-white/80 backdrop-blur-md border border-[#9BF3F0]/30 rounded-3xl shadow-xl shadow-[#473198]/5 p-6">
-          <h3 className="text-lg font-bold text-[#473198] mb-4">Ventas Ultimos 30 Dias</h3>
+        <div className="bg-surface/80 backdrop-blur-md border border-primary-container/30 rounded-3xl shadow-xl shadow-primary/5 p-6">
+          <h3 className="text-lg font-bold text-primary mb-4">Ventas Ultimos 30 Dias</h3>
           {chartLoading ? (
-            <div className="h-64 flex items-center justify-center text-[#473198]/40">Cargando...</div>
+            <div className="h-64 flex items-center justify-center text-on-surface-variant">Cargando...</div>
           ) : chartError ? (
-            <div className="h-64 flex items-center justify-center text-red-500">Error al cargar el grafico</div>
+            <div className="h-64 flex items-center justify-center text-error">Error al cargar el grafico</div>
           ) : chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={280}>
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#9BF3F0/20" />
-                <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#473198/60' }} />
-                <YAxis tick={{ fontSize: 11, fill: '#473198/60' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-primary-container)" opacity={0.2} />
+                <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'var(--color-on-surface-variant)' }} />
+                <YAxis tick={{ fontSize: 11, fill: 'var(--color-on-surface-variant)' }} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: 'white',
-                    border: '1px solid #9BF3F0',
+                    backgroundColor: 'var(--color-surface)',
+                    border: '1px solid var(--color-primary-container)',
                     borderRadius: '12px',
-                    boxShadow: '0 4px 12px rgba(71,49,152,0.1)',
+                    color: 'var(--color-on-surface)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                   }}
                 />
                 <Line
                   type="monotone"
                   dataKey="ventas"
-                  stroke="#473198"
+                  stroke="var(--color-primary)"
                   strokeWidth={3}
-                  dot={{ fill: '#473198', r: 4 }}
+                  dot={{ fill: 'var(--color-primary)', r: 4 }}
                   activeDot={{ r: 6 }}
                 />
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-64 flex items-center justify-center text-[#473198]/40">
+            <div className="h-64 flex items-center justify-center text-on-surface-variant">
               Sin datos de ventas aun
             </div>
           )}
         </div>
-
+  
         {/* Top Products */}
-        <div className="bg-white/80 backdrop-blur-md border border-[#9BF3F0]/30 rounded-3xl shadow-xl shadow-[#473198]/5 p-6">
-          <h3 className="text-lg font-bold text-[#473198] mb-4">Top Productos Vendidos</h3>
+        <div className="bg-surface/80 backdrop-blur-md border border-primary-container/30 rounded-3xl shadow-xl shadow-primary/5 p-6">
+          <h3 className="text-lg font-bold text-primary mb-4">Top Productos Vendidos</h3>
           {topLoading ? (
-            <div className="h-64 flex items-center justify-center text-[#473198]/40">Cargando...</div>
+            <div className="h-64 flex items-center justify-center text-on-surface-variant">Cargando...</div>
           ) : topError ? (
-            <div className="h-64 flex items-center justify-center text-red-500">Error al cargar los datos</div>
+            <div className="h-64 flex items-center justify-center text-error">Error al cargar los datos</div>
           ) : topProducts.length > 0 ? (
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={topProducts.slice(0, 8)}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#9BF3F0/20" />
-                <XAxis dataKey="nombre" tick={{ fontSize: 10, fill: '#473198/60' }} interval={0} />
-                <YAxis tick={{ fontSize: 11, fill: '#473198/60' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-primary-container)" opacity={0.2} />
+                <XAxis dataKey="nombre" tick={{ fontSize: 10, fill: 'var(--color-on-surface-variant)' }} interval={0} />
+                <YAxis tick={{ fontSize: 11, fill: 'var(--color-on-surface-variant)' }} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: 'white',
-                    border: '1px solid #9BF3F0',
+                    backgroundColor: 'var(--color-surface)',
+                    border: '1px solid var(--color-primary-container)',
                     borderRadius: '12px',
+                    color: 'var(--color-on-surface)',
                   }}
                 />
-                <Bar dataKey="total_sold" fill="#473198" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="total_sold" fill="var(--color-primary)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-64 flex items-center justify-center text-[#473198]/40">
+            <div className="h-64 flex items-center justify-center text-on-surface-variant">
               Sin datos de productos aun
             </div>
           )}
@@ -261,70 +263,70 @@ const DashboardSmart = () => {
       {/* Alerts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Low Stock Alerts */}
-        <div className="bg-white/80 backdrop-blur-md border border-[#9BF3F0]/30 rounded-3xl shadow-xl shadow-[#473198]/5 p-6">
-          <h3 className="text-lg font-bold text-[#473198] mb-4">Stock Bajo</h3>
+        <div className="bg-surface/80 backdrop-blur-md border border-primary-container/30 rounded-3xl shadow-xl shadow-primary/5 p-6">
+          <h3 className="text-lg font-bold text-primary mb-4">Stock Bajo</h3>
           {lowStockLoading ? (
-            <p className="text-[#473198]/40">Cargando...</p>
+            <p className="text-on-surface-variant">Cargando...</p>
           ) : lowStockError ? (
-            <p className="text-red-500">Error al cargar las alertas</p>
+            <p className="text-error">Error al cargar las alertas</p>
           ) : lowStock.length > 0 ? (
             <div className="space-y-3 max-h-64 overflow-y-auto">
               {lowStock.slice(0, 10).map((item) => (
-                <div key={item.id} className="flex items-center justify-between p-3 bg-[#DAFFED]/50 rounded-xl">
+                <div key={item.id} className="flex items-center justify-between p-3 bg-primary-container/50 rounded-xl">
                   <div>
-                    <p className="text-sm font-bold text-[#473198]">{item.nombre}</p>
-                    <p className="text-xs text-[#473198]/50">{item.codigo_barras}</p>
+                    <p className="text-sm font-bold text-primary">{item.nombre}</p>
+                    <p className="text-xs text-on-surface-variant">{item.codigo_barras}</p>
                   </div>
-                  <span className="px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full">
+                  <span className="px-3 py-1 bg-error/10 text-error text-xs font-bold rounded-full">
                     {item.total_stock} uds
                   </span>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-[#473198]/40 text-sm">Todo el stock esta en niveles normales</p>
+            <p className="text-on-surface-variant text-sm">Todo el stock esta en niveles normales</p>
           )}
         </div>
-
+  
         {/* Expiring Soon */}
-        <div className="bg-white/80 backdrop-blur-md border border-[#9BF3F0]/30 rounded-3xl shadow-xl shadow-[#473198]/5 p-6">
-          <h3 className="text-lg font-bold text-[#473198] mb-4">Proximos a Vencer</h3>
+        <div className="bg-surface/80 backdrop-blur-md border border-primary-container/30 rounded-3xl shadow-xl shadow-primary/5 p-6">
+          <h3 className="text-lg font-bold text-primary mb-4">Proximos a Vencer</h3>
           {expiringLoading ? (
-            <p className="text-[#473198]/40">Cargando...</p>
+            <p className="text-on-surface-variant">Cargando...</p>
           ) : expiringError ? (
-            <p className="text-red-500">Error al cargar las alertas</p>
+            <p className="text-error">Error al cargar las alertas</p>
           ) : expiringSoon.length > 0 ? (
             <div className="space-y-3 max-h-64 overflow-y-auto">
               {expiringSoon.slice(0, 10).map((item) => (
-                <div key={item.id} className="flex items-center justify-between p-3 bg-yellow-50 rounded-xl">
+                <div key={item.id} className="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl">
                   <div>
-                    <p className="text-sm font-bold text-[#473198]">{item.producto_nombre || item.producto?.nombre || 'Sin nombre'}</p>
-                    <p className="text-xs text-[#473198]/50">Lote: {item.lote}</p>
+                    <p className="text-sm font-bold text-primary">{item.producto_nombre || item.producto?.nombre || 'Sin nombre'}</p>
+                    <p className="text-xs text-on-surface-variant">Lote: {item.lote}</p>
                   </div>
-                  <span className="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">
+                  <span className="px-3 py-1 bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-200 text-xs font-bold rounded-full">
                     {item.fecha_vencimiento ? format(new Date(item.fecha_vencimiento), 'dd MMM', { locale: es }) : '—'}
                   </span>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-[#473198]/40 text-sm">No hay productos proximos a vencer</p>
+            <p className="text-on-surface-variant text-sm">No hay productos proximos a vencer</p>
           )}
         </div>
       </div>
-
+  
       {/* Recent Sales */}
-      <div className="bg-white/80 backdrop-blur-md border border-[#9BF3F0]/30 rounded-3xl shadow-xl shadow-[#473198]/5 p-6">
-        <h3 className="text-lg font-bold text-[#473198] mb-4">Ventas Recientes</h3>
+      <div className="bg-surface/80 backdrop-blur-md border border-primary-container/30 rounded-3xl shadow-xl shadow-primary/5 p-6">
+        <h3 className="text-lg font-bold text-primary mb-4">Ventas Recientes</h3>
         {recentLoading ? (
-          <p className="text-[#473198]/40">Cargando...</p>
+          <p className="text-on-surface-variant">Cargando...</p>
         ) : recentError ? (
-          <p className="text-red-500 text-center py-8">Error al cargar las ventas recientes</p>
+          <p className="text-error text-center py-8">Error al cargar las ventas recientes</p>
         ) : recentSales.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-xs font-bold text-[#473198]/50 uppercase tracking-wider border-b border-[#9BF3F0]/20">
+                <tr className="text-left text-xs font-bold text-on-surface-variant uppercase tracking-wider border-b border-primary-container/20">
                   <th className="pb-3 pr-4">Documento</th>
                   <th className="pb-3 pr-4">Cliente</th>
                   <th className="pb-3 pr-4">Cajero</th>
@@ -332,16 +334,16 @@ const DashboardSmart = () => {
                   <th className="pb-3 text-right">Fecha</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#9BF3F0]/10">
+              <tbody className="divide-y divide-primary-container/10">
                 {recentSales.map((sale) => (
-                  <tr key={sale.id} className="hover:bg-[#DAFFED]/30 transition-colors">
-                    <td className="py-3 pr-4 text-sm font-bold text-[#473198]">{sale.numero_documento}</td>
-                    <td className="py-3 pr-4 text-sm text-[#473198]/70">{sale.cliente || 'Venta general'}</td>
-                    <td className="py-3 pr-4 text-sm text-[#473198]/70">{sale.cajero || '—'}</td>
-                    <td className="py-3 pr-4 text-sm font-bold text-[#473198] text-right">
+                  <tr key={sale.id} className="hover:bg-primary-container/30 transition-colors">
+                    <td className="py-3 pr-4 text-sm font-bold text-primary">{sale.numero_documento}</td>
+                    <td className="py-3 pr-4 text-sm text-on-surface-variant">{sale.cliente || 'Venta general'}</td>
+                    <td className="py-3 pr-4 text-sm text-on-surface-variant">{sale.cajero || '—'}</td>
+                    <td className="py-3 pr-4 text-sm font-bold text-primary text-right">
                       ${Number(sale.total).toLocaleString()}
                     </td>
-                    <td className="py-3 text-sm text-[#473198]/50 text-right">
+                    <td className="py-3 text-sm text-on-surface-variant text-right">
                       {sale.created_at ? format(new Date(sale.created_at), 'dd MMM HH:mm', { locale: es }) : '—'}
                     </td>
                   </tr>
@@ -350,7 +352,7 @@ const DashboardSmart = () => {
             </table>
           </div>
         ) : (
-          <p className="text-[#473198]/40 text-sm text-center py-8">No hay ventas registradas aun</p>
+          <p className="text-on-surface-variant text-sm text-center py-8">No hay ventas registradas aun</p>
         )}
       </div>
     </div>

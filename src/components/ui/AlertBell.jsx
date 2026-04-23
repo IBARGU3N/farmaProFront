@@ -94,7 +94,7 @@ export const AlertBell = () => {
     <div className="relative">
       <button
         onClick={toggleOpen}
-        className="relative p-2 text-[#473198]/60 hover:text-[#473198] transition-colors"
+        className="relative p-2 text-primary/60 hover:text-primary transition-colors"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -109,13 +109,13 @@ export const AlertBell = () => {
       {isOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={closePanel} />
-          <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-[#9BF3F0]/30 z-50 overflow-hidden">
-            <div className="p-4 border-b border-[#9BF3F0]/20">
-              <h3 className="text-sm font-bold text-[#473198]">Notificaciones ({alertCount})</h3>
+          <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-secondary/30 z-50 overflow-hidden">
+            <div className="p-4 border-b border-secondary/20">
+              <h3 className="text-sm font-bold text-primary">Notificaciones ({alertCount})</h3>
             </div>
             <div className="max-h-80 overflow-y-auto">
               {alerts.length > 0 ? alerts.map((alert, i) => (
-                <div key={i} className={`p-3 border-b border-[#9BF3F0]/10 ${severityColors[alert.severity]}`}>
+                <div key={i} className={`p-3 border-b border-secondary/10 ${severityColors[alert.severity]}`}>
                   <div className="flex items-start gap-2">
                     <span className="mt-0.5 flex-shrink-0">{severityIcons[alert.severity]}</span>
                     <div className="flex-1 min-w-0">
@@ -133,7 +133,7 @@ export const AlertBell = () => {
                   </div>
                 </div>
               )) : (
-                <div className="p-8 text-center text-[#473198]/40 text-sm">
+                <div className="p-8 text-center text-primary/40 text-sm">
                   No hay notificaciones
                 </div>
               )}

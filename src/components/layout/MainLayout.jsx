@@ -1,8 +1,11 @@
 import { Outlet } from 'react-router-dom';
 import { SidebarSmart } from './SidebarSmart';
 import { TopBarSmart } from './TopBarSmart';
+import { useGlobalShortcuts } from '../../hooks/useGlobalShortcuts';
 
 export const MainLayout = () => {
+  // Sistema de atajos de teclado global — Alt+D/P/I/C/R/O para navegación, / para búsqueda, ? para ayuda
+  useGlobalShortcuts();
   return (
     <div className="flex h-screen overflow-hidden bg-surface text-on-surface transition-colors duration-500">
       <SidebarSmart />

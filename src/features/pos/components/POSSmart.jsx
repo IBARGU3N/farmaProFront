@@ -9,6 +9,8 @@ import { Card } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
 import { CajaSelector } from './CajaSelector';
 import { PaymentModal } from './PaymentModal';
+import { useKeyboardShortcuts } from '../../../hooks/useKeyboardShortcuts';
+import { ShortcutBadge } from '../../../components/ui/ShortcutBadge';
 import toast from 'react-hot-toast';
 
 const POSSmart = () => {
@@ -23,9 +25,9 @@ const POSSmart = () => {
   const [showSwitchCajaModal, setShowSwitchCajaModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('EFECTIVO');
   const [cashReceived, setCashReceived] = useState('');
+  const [paymentReference, setPaymentReference] = useState('');
   const [selectedCajaId, setSelectedCajaId] = useState('');
   const [isTestMode, setIsTestMode] = useState(false);
-  const [showDebugPanel, setShowDebugPanel] = useState(false);
   const searchInputRef = useRef(null);
 
   const { data: cashRegisterStatus } = useQuery({
@@ -125,10 +127,15 @@ const POSSmart = () => {
   };
 
   const handleProcessSale = () => {
+    console.log('POSSmart: handleProcessSale triggered');
+    console.log('POSSmart: Cart items length:', items.length);
     if (items.length === 0) {
-      toast.error('El carrito esta vacio');
+      console.warn('POSSmart: Cart is empty, modal not opened');
+      toast.error('El carrito está vacío. Agregue productos antes de procesar.');
       return;
     }
+    console.log('POSSmart: Opening payment modal...');
+    toast('Abriendo modal de pago...', { icon: '💳', duration: 1200 });
     setShowPaymentModal(true);
   };
 
@@ -141,17 +148,51 @@ const POSSmart = () => {
       })),
       tercero_id: client?.id || null,
       descuento: discount,
-      metodo_pago: paymentMethod,
+      metodo_pago: paymentMethod || 'EFECTIVO',
       usuario_id: user?.id,
-      is_test: isTestMode,
+      is_test: true,
     };
 
-    if (paymentMethod === 'MERCADO_PAGO') {
-      initiateMPMutation.mutate(saleData);
-    } else {
-      processSaleMutation.mutate(saleData);
-    }
+    toast.loading('Procesando venta...', { id: 'sale-processing' });
+    processSaleMutation.mutate(saleData, {
+      onSettled: () => toast.dismiss('sale-processing'),
+    });
   };
+
+  useKeyboardShortcuts([
+    {
+      key: 'F12',
+      action: handleProcessSale,
+      label: 'Procesar Venta',
+    },
+    {
+      key: 's',
+      ctrl: true,
+      action: () => {
+        if (showPaymentModal) {
+          handleConfirmPayment();
+        }
+      },
+      label: 'Confirmar pago',
+    },
+    {
+      key: 'Escape',
+      action: () => {
+        if (showPaymentModal) {
+          setShowPaymentModal(false);
+          toast('Pago cancelado', { icon: '✖️', duration: 1200 });
+        } else if (showSwitchCajaModal) {
+          setShowSwitchCajaModal(false);
+        }
+      },
+      label: 'Cerrar modal',
+    },
+    {
+      key: '/',
+      action: () => searchInputRef.current?.focus(),
+      label: 'Enfocar búsqueda',
+    },
+  ]);
 
   const handleOpenRegister = () => {
     if (!selectedCajaId) {
@@ -174,17 +215,17 @@ const POSSmart = () => {
 
   if (!isOpen) {
     return (
-      <div className="p-6 bg-[#DAFFED]/20 min-h-screen flex items-center justify-center">
+      <div className="p-6 bg-surface-container-low/20 min-h-screen flex items-center justify-center">
         <Card className="p-12 text-center max-w-md w-full">
           <div className="flex justify-center mb-4">
-            <svg className="w-16 h-16 text-[#473198]/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <svg className="w-16 h-16 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-black text-[#473198] mb-2">Caja Cerrada</h2>
-          <p className="text-[#473198]/60 mb-6">Debe abrir una caja antes de procesar ventas</p>
+          <h2 className="text-2xl font-black text-primary mb-2">Caja Cerrada</h2>
+          <p className="text-primary/60 mb-6">Debe abrir una caja antes de procesar ventas</p>
            <div className="space-y-4">
-             <p className="text-sm font-bold text-[#473198]">Seleccione una caja para abrir</p>
+             <p className="text-sm font-bold text-primary">Seleccione una caja para abrir</p>
              <CajaSelector
                cajas={cajasData?.data || []}
                selectedCajaId={selectedCajaId}
@@ -194,7 +235,7 @@ const POSSmart = () => {
                variant="primary"
                size="large"
                onClick={handleOpenRegister}
-               isLoading={openRegisterMutation.isLoading}
+               isLoading={openRegisterMutation.isPending}
                disabled={!selectedCajaId}
              >
                Abrir Caja
@@ -207,31 +248,34 @@ const POSSmart = () => {
 
   return (
     <>
-      <div className="p-6 bg-[#DAFFED]/20 min-h-screen">
+      <div className="p-6 bg-surface-container-low/20 min-h-screen">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
-          <div className="relative">
-            <input
-              ref={searchInputRef}
-              type="text"
-              placeholder="Buscar producto por nombre o codigo de barras..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-6 py-4 border-2 border-[#9BF3F0]/30 rounded-2xl bg-white/80 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-[#473198]/20 focus:border-[#473198]/40 text-lg font-medium"
-            />
-            {searchResults.length > 0 && (
-              <div className="absolute z-10 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-[#9BF3F0]/30 overflow-hidden max-h-80 overflow-y-auto">
+           <div className="relative">
+             <input
+               ref={searchInputRef}
+               type="text"
+               placeholder="Buscar producto por nombre o codigo de barras..."
+               value={searchQuery}
+               onChange={(e) => setSearchQuery(e.target.value)}
+               className="w-full px-6 py-4 border-2 border-primary-container/30 rounded-2xl bg-surface/80 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-lg font-medium"
+             />
+             <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+               <ShortcutBadge keys="/" />
+             </div>
+             {searchResults.length > 0 && (
+              <div className="absolute z-10 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-secondary/30 overflow-hidden max-h-80 overflow-y-auto">
                 {searchResults.map((product) => (
                   <button
                     key={product.id}
                     onClick={() => handleAddToCart(product)}
-                    className="w-full px-6 py-4 flex items-center justify-between hover:bg-[#DAFFED]/50 transition-colors text-left border-b border-[#9BF3F0]/10 last:border-0"
+                    className="w-full px-6 py-4 flex items-center justify-between hover:bg-surface-container-low/50 dark:bg-surface-container-lowest/50 transition-colors text-left border-b border-primary-container/10 last:border-0"
                   >
                     <div>
-                      <p className="font-bold text-[#473198]">{product.nombre}</p>
-                      <p className="text-xs text-[#473198]/50">{product.codigo_barras}</p>
+                      <p className="font-bold text-primary">{product.nombre}</p>
+                      <p className="text-xs text-primary/50">{product.codigo_barras}</p>
                     </div>
-                    <span className="font-black text-[#473198]">${product.precio_venta?.toLocaleString() || 0}</span>
+                    <span className="font-black text-primary">${product.precio_venta?.toLocaleString() || 0}</span>
                   </button>
                 ))}
               </div>
@@ -240,11 +284,11 @@ const POSSmart = () => {
 
            <div className="grid grid-cols-3 gap-4">
              <Card className="p-4 text-center relative group">
-               <p className="text-xs text-[#473198]/50 font-bold uppercase">Caja</p>
-               <p className="text-sm font-black text-[#473198]">{cashRegisterStatus?.data?.caja?.nombre || '—'}</p>
+               <p className="text-xs text-primary/50 font-bold uppercase">Caja</p>
+               <p className="text-sm font-black text-primary">{cashRegisterStatus?.data?.caja?.nombre || '—'}</p>
                <button 
                  onClick={() => setShowSwitchCajaModal(true)}
-                 className="absolute top-2 right-2 p-1 bg-[#DAFFED] text-[#473198] rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#9BF3F0]"
+                 className="absolute top-2 right-2 p-1 bg-surface-container-low dark:bg-surface-container-lowest text-primary rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-secondary"
                  title="Cambiar Caja"
                >
                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -253,12 +297,12 @@ const POSSmart = () => {
                </button>
              </Card>
              <Card className="p-4 text-center">
-               <p className="text-xs text-[#473198]/50 font-bold uppercase">Ventas Hoy</p>
-               <p className="text-sm font-black text-[#473198]">{cashRegisterStatus?.data?.today_stats?.total_ventas || 0}</p>
+               <p className="text-xs text-primary/50 font-bold uppercase">Ventas Hoy</p>
+               <p className="text-sm font-black text-primary">{cashRegisterStatus?.data?.today_stats?.total_ventas || 0}</p>
              </Card>
              <Card className="p-4 text-center">
-               <p className="text-xs text-[#473198]/50 font-bold uppercase">Balance</p>
-               <p className="text-sm font-black text-[#473198]">
+               <p className="text-xs text-primary/50 font-bold uppercase">Balance</p>
+               <p className="text-sm font-black text-primary">
                  ${Number(cashRegisterStatus?.data?.today_stats?.balance || 0).toLocaleString()}
                </p>
              </Card>
@@ -268,18 +312,18 @@ const POSSmart = () => {
          <div className="lg:col-span-1">
            <Card className="p-6 sticky top-6">
              <div className="flex items-center justify-between mb-4">
-               <h3 className="text-lg font-black text-[#473198]">Carrito</h3>
-               <span className="px-3 py-1 bg-[#473198] text-white text-xs font-bold rounded-full">
+               <h3 className="text-lg font-black text-primary">Carrito</h3>
+               <span className="px-3 py-1 bg-primary text-white text-xs font-bold rounded-full">
                  {getItemCount()} items
                </span>
              </div>
 
              <div className="mb-4">
                {client ? (
-                 <div className="flex items-center justify-between p-3 bg-[#DAFFED]/50 rounded-xl">
+                 <div className="flex items-center justify-between p-3 bg-surface-container-low/50 dark:bg-surface-container-lowest/50 rounded-xl">
                    <div>
-                     <p className="text-sm font-bold text-[#473198]">{client.razon_social_o_nombre}</p>
-                     <p className="text-xs text-[#473198]/50">{client.numero_documento}</p>
+                     <p className="text-sm font-bold text-primary">{client.razon_social_o_nombre}</p>
+                     <p className="text-xs text-primary/50">{client.numero_documento}</p>
                    </div>
                    <button onClick={() => setClient(null)} className="text-red-500 text-sm font-bold">
                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -290,7 +334,7 @@ const POSSmart = () => {
                ) : (
                  <button
                    onClick={() => setShowClientSearch(!showClientSearch)}
-                   className="w-full p-3 border-2 border-dashed border-[#9BF3F0]/30 rounded-xl text-sm text-[#473198]/50 hover:border-[#473198]/30 hover:text-[#473198] transition-colors"
+                   className="w-full p-3 border-2 border-dashed border-secondary/30 rounded-xl text-sm text-primary/50 hover:border-primary/30 hover:text-primary transition-colors"
                  >
                    + Seleccionar Cliente
                  </button>
@@ -301,7 +345,7 @@ const POSSmart = () => {
                      <button
                        key={c.id}
                        onClick={() => { setClient(c); setShowClientSearch(false); }}
-                       className="w-full text-left p-2 hover:bg-[#DAFFED]/50 rounded-lg text-sm"
+                       className="w-full text-left p-2 hover:bg-surface-container-low/50 dark:bg-surface-container-lowest/50 rounded-lg text-sm"
                      >
                        {c.razon_social_o_nombre}
                      </button>
@@ -312,25 +356,25 @@ const POSSmart = () => {
 
              <div className="space-y-3 max-h-64 overflow-y-auto mb-4">
                {items.length === 0 ? (
-                 <p className="text-center text-[#473198]/40 text-sm py-8">Carrito vacio</p>
+                 <p className="text-center text-primary/40 text-sm py-8">Carrito vacío</p>
                ) : (
                  items.map((item) => (
-                   <div key={item.producto_id} className="flex items-center justify-between p-3 bg-[#DAFFED]/30 rounded-xl">
+                   <div key={item.producto_id} className="flex items-center justify-between p-3 bg-surface-container-low/30 rounded-xl">
                      <div className="flex-1 min-w-0">
-                       <p className="text-sm font-bold text-[#473198] truncate">{item.nombre}</p>
-                       <p className="text-xs text-[#473198]/50">${item.precio.toLocaleString()} c/u</p>
+                       <p className="text-sm font-bold text-primary truncate">{item.nombre}</p>
+                       <p className="text-xs text-primary/50">${item.precio.toLocaleString()} c/u</p>
                      </div>
                      <div className="flex items-center gap-2">
                        <button
                          onClick={() => updateQuantity(item.producto_id, item.quantity - 1)}
-                         className="w-7 h-7 rounded-full bg-white border border-[#9BF3F0]/30 flex items-center justify-center text-[#473198] font-bold hover:bg-[#9BF3F0]/20"
+                         className="w-7 h-7 rounded-full bg-white border border-secondary/30 flex items-center justify-center text-primary font-bold hover:bg-secondary/20"
                        >
                          −
                        </button>
-                       <span className="text-sm font-bold text-[#473198] w-6 text-center">{item.quantity}</span>
+                       <span className="text-sm font-bold text-primary w-6 text-center">{item.quantity}</span>
                        <button
                          onClick={() => updateQuantity(item.producto_id, item.quantity + 1)}
-                         className="w-7 h-7 rounded-full bg-white border border-[#9BF3F0]/30 flex items-center justify-center text-[#473198] font-bold hover:bg-[#9BF3F0]/20"
+                         className="w-7 h-7 rounded-full bg-white border border-secondary/30 flex items-center justify-center text-primary font-bold hover:bg-secondary/20"
                        >
                          +
                        </button>
@@ -348,103 +392,47 @@ const POSSmart = () => {
                )}
              </div>
 
-             <div className="border-t border-[#9BF3F0]/20 pt-4 space-y-2">
-               <div className="flex justify-between text-sm">
-                 <span className="text-[#473198]/60">Subtotal</span>
-                 <span className="font-bold text-[#473198]">${getSubtotal().toLocaleString()}</span>
-               </div>
-               <div className="flex justify-between text-sm">
-                 <span className="text-[#473198]/60">Descuento</span>
-                 <span className="font-bold text-red-500">-${discount.toLocaleString()}</span>
-               </div>
-               <div className="flex justify-between text-lg font-black text-[#473198] pt-2 border-t border-[#9BF3F0]/20">
-                 <span>Total</span>
-                 <span>${getTotal().toLocaleString()}</span>
-               </div>
+                <div className="border-t border-primary-container/20 pt-4 space-y-2">
+
+                <div className="flex justify-between text-sm">
+                  <span className="text-on-surface-variant">Subtotal</span>
+                  <span className="font-bold text-primary">${getSubtotal().toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-on-surface-variant">Descuento</span>
+                  <span className="font-bold text-error">-${discount.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-lg font-black text-primary pt-2 border-t border-primary-container/20">
+                  <span>Total</span>
+                  <span>${getTotal().toLocaleString()}</span>
+                </div>
+
              </div>
 
              <div className="mt-6 space-y-3">
-               <Button
-                 variant="primary"
-                 size="large"
-                 className="w-full"
-                 onClick={handleProcessSale}
-                 disabled={items.length === 0 || processSaleMutation.isLoading}
-                 isLoading={processSaleMutation.isLoading}
-               >
-                 Procesar Venta
-               </Button>
-               <Button
-                 variant="outline"
-                 size="small"
-                 className="w-full"
-                 onClick={clearCart}
-                 disabled={items.length === 0}
-               >
-                 Limpiar Carrito
-               </Button>
-             </div>
+                 <Button
+                   variant="primary"
+                   size="large"
+                   className="w-full"
+                   onClick={handleProcessSale}
+                   disabled={items.length === 0 || processSaleMutation.isPending}
+                   isLoading={processSaleMutation.isPending}
+                   title="Presiona F12 para procesar"
+                 >
+                   Procesar Venta <ShortcutBadge keys="F12" />
+                </Button>
 
-             {/* Debug Panel */}
-             <div className="mt-6 border-t border-[#9BF3F0]/20 pt-4">
-               <button 
-                 onClick={() => setShowDebugPanel(!showDebugPanel)}
-                 className="w-full flex items-center justify-between p-2 text-xs font-bold text-[#473198]/40 hover:text-[#473198] transition-colors"
-               >
-                 <span>PANEL DE DEBUG (DEV ONLY)</span>
-                 <svg className={`w-4 h-4 transition-transform ${showDebugPanel ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                 </svg>
-               </button>
-               {showDebugPanel && (
-                 <div className="mt-3 p-4 bg-[#f8f9fa] rounded-xl border border-[#9BF3F0]/30 space-y-4">
-                   <div className="flex items-center justify-between">
-                     <span className="text-xs font-bold text-[#473198]">Modo Prueba:</span>
-                     <button 
-                       onClick={() => setIsTestMode(!isTestMode)}
-                       className={`w-10 h-5 rounded-full transition-colors relative ${isTestMode ? 'bg-[#473198]' : 'bg-gray-300'}`}
-                     >
-                       <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${isTestMode ? 'left-6' : 'left-1'}`} />
-                     </button>
-                   </div>
-                   <div className="grid grid-cols-3 gap-2">
-                     <button 
-                       onClick={() => toast.success('Simulado: Pago Aprobado')}
-                       className="p-2 text-[10px] font-bold bg-green-100 text-green-700 rounded hover:bg-green-200"
-                     >
-                       APROBADO
-                     </button>
-                     <button 
-                       onClick={() => toast.error('Simulado: Pago Rechazado')}
-                       className="p-2 text-[10px] font-bold bg-red-100 text-red-700 rounded hover:bg-red-200"
-                     >
-                       RECHAZADO
-                     </button>
-                     <button 
-                       onClick={() => toast('Simulado: Pago Pendiente', { icon: '⏳' })}
-                       className="p-2 text-[10px] font-bold bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200"
-                     >
-                       PENDIENTE
-                     </button>
-                   </div>
-                   <button 
-                     onClick={() => {
-                       console.log('Payment Preference Data:', {
-                         items,
-                         total: getTotal(),
-                         paymentMethod,
-                         isTestMode,
-                         client
-                       });
-                       toast.success('JSON enviado a consola');
-                     }}
-                     className="w-full p-2 text-[10px] font-bold bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-                   >
-                     Log Preference JSON
-                   </button>
-                 </div>
-               )}
-             </div>
+                <Button
+                  variant="outline"
+                  size="small"
+                  className="w-full"
+                  onClick={clearCart}
+                  disabled={items.length === 0}
+                >
+                  Limpiar Carrito
+                </Button>
+              </div>
+
            </Card>
       </div>
     </div>
@@ -453,9 +441,9 @@ const POSSmart = () => {
     {showSwitchCajaModal && (
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <Card className="w-full max-w-2xl p-8">
-          <h3 className="text-2xl font-black text-[#473198] mb-6">Cambiar de Caja</h3>
+          <h3 className="text-2xl font-black text-primary mb-6">Cambiar de Caja</h3>
           <div className="space-y-4 mb-6">
-            <p className="text-sm font-bold text-[#473198]">Seleccione la caja a la que desea cambiar</p>
+            <p className="text-sm font-bold text-primary">Seleccione la caja a la que desea cambiar</p>
             <CajaSelector
               cajas={cajasData?.data || []}
               selectedCajaId={selectedCajaId}
@@ -470,7 +458,7 @@ const POSSmart = () => {
               variant="primary"
               className="flex-1"
               onClick={handleSwitchCaja}
-              isLoading={switchRegisterMutation.isLoading}
+              isLoading={switchRegisterMutation.isPending}
               disabled={!selectedCajaId}
             >
               Confirmar Cambio
@@ -479,6 +467,20 @@ const POSSmart = () => {
         </Card>
       </div>
     )}
+
+    <PaymentModal
+      isOpen={showPaymentModal}
+      onClose={() => setShowPaymentModal(false)}
+      onConfirm={handleConfirmPayment}
+      total={getTotal()}
+      items={items}
+      paymentMethod={paymentMethod}
+      setPaymentMethod={setPaymentMethod}
+      cashReceived={cashReceived}
+      setCashReceived={setCashReceived}
+      change={Math.max(0, parseFloat(cashReceived) - getTotal())}
+      isLoading={processSaleMutation.isPending || initiateMPMutation.isPending}
+    />
   </>
   );
 };

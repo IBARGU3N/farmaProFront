@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supplierService } from '../../../services/supplier/supplierService';
 import { Card } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
+import { ShortcutBadge } from '../../../components/ui/ShortcutBadge';
+import { useKeyboardShortcuts } from '../../../hooks/useKeyboardShortcuts';
 import toast from 'react-hot-toast';
 
 const SupplierSmart = () => {
@@ -25,7 +27,7 @@ const SupplierSmart = () => {
   const createMutation = useMutation({
     mutationFn: (data) => supplierService.create(data),
     onSuccess: () => {
-      toast.success('Proveedor creado exitosamente');
+      toast.success('Proveedor registrado correctamente');
       queryClient.invalidateQueries({ queryKey: ['suppliers'] });
       setShowForm(false);
       resetForm();
@@ -63,13 +65,46 @@ const SupplierSmart = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     if (editingSupplier) {
       updateMutation.mutate({ id: editingSupplier.id, data: formData });
     } else {
       createMutation.mutate(formData);
     }
   };
+
+  useKeyboardShortcuts([
+    {
+      key: 'n',
+      alt: true,
+      action: () => {
+        setEditingSupplier(null);
+        resetForm();
+        setShowForm(true);
+        toast('Formulario de nuevo proveedor abierto', { icon: '📝', duration: 1200 });
+      },
+      label: 'Nuevo proveedor',
+    },
+    {
+      key: 's',
+      ctrl: true,
+      action: () => {
+        if (showForm) {
+          handleSubmit();
+        }
+      },
+      label: 'Guardar proveedor',
+    },
+    {
+      key: 'Escape',
+      action: () => {
+        if (showForm) {
+          setShowForm(false);
+        }
+      },
+      label: 'Cancelar',
+    },
+  ]);
 
   const handleEdit = (supplier) => {
     setEditingSupplier(supplier);
@@ -97,8 +132,8 @@ const SupplierSmart = () => {
           <h1 className="text-3xl font-black text-primary">Proveedores</h1>
           <p className="text-primary/60 mt-1">Gestion de proveedores</p>
         </div>
-        <Button variant="primary" onClick={() => { setEditingSupplier(null); resetForm(); setShowForm(!showForm); }}>
-          {showForm ? 'Cancelar' : '+ Nuevo Proveedor'}
+        <Button variant="primary" onClick={() => { setEditingSupplier(null); resetForm(); setShowForm(!showForm); }} title="Nuevo Proveedor [Alt+N]">
+          {showForm ? 'Cancelar' : <><span>+ Nuevo Proveedor</span> <ShortcutBadge keys="Alt+N" /></>}
         </Button>
       </div>
 
@@ -168,8 +203,8 @@ const SupplierSmart = () => {
               />
             </div>
             <div className="md:col-span-2">
-              <Button type="submit" variant="primary" isLoading={createMutation.isLoading || updateMutation.isLoading}>
-                {editingSupplier ? 'Actualizar Proveedor' : 'Crear Proveedor'}
+              <Button type="submit" variant="primary" isLoading={createMutation.isPending || updateMutation.isPending}>
+                {editingSupplier ? 'Actualizar Proveedor' : 'Crear Proveedor'} <ShortcutBadge keys="Ctrl+S" />
               </Button>
             </div>
           </form>

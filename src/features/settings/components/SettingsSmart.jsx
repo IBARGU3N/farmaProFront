@@ -166,7 +166,7 @@ const SettingsSmart = () => {
               </button>
               <button
                 className="px-6 py-2 text-white font-bold rounded-xl text-sm"
-                style={{ backgroundColor: accentColor, color: '#473198' }}
+                style={{ backgroundColor: accentColor, color: 'var(--sys-primary)' }}
               >
                 Boton acento
               </button>

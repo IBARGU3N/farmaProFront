@@ -25,4 +25,6 @@ export const reportService = {
   getSales: (params) => api.get('/reports/sales', { params }),
   getInventory: () => api.get('/reports/inventory'),
   getFinancial: (params) => api.get('/reports/financial', { params }),
+  exportPdf: (type, params) => api.get(`/reports/export/pdf/${type}`, { params, responseType: 'blob' }),
+  exportExcel: (type, params) => api.get(`/reports/export/excel/${type}`, { params, responseType: 'blob' }),
 };

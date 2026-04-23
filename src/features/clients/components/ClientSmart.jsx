@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientService } from '../../../services/client/clientService';
 import { Card } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
+import { useKeyboardShortcuts } from '../../../hooks/useKeyboardShortcuts';
+import { ShortcutBadge } from '../../../components/ui/ShortcutBadge';
 import toast from 'react-hot-toast';
 
 const ClientSmart = () => {
@@ -33,7 +35,7 @@ const ClientSmart = () => {
   const createMutation = useMutation({
     mutationFn: (data) => clientService.create(data),
     onSuccess: () => {
-      toast.success('Cliente creado exitosamente');
+      toast.success('Cliente registrado correctamente');
       queryClient.invalidateQueries({ queryKey: ['clients'] });
       setShowForm(false);
       resetForm();
@@ -71,13 +73,49 @@ const ClientSmart = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     if (editingClient) {
       updateMutation.mutate({ id: editingClient.id, data: formData });
     } else {
       createMutation.mutate(formData);
     }
   };
+
+  useKeyboardShortcuts([
+    {
+      key: 'n',
+      alt: true,
+      action: () => {
+        setEditingClient(null);
+        resetForm();
+        setShowForm(true);
+        toast('Formulario de nuevo cliente abierto', { icon: '📝', duration: 1200 });
+      },
+      label: 'Nuevo cliente',
+    },
+    {
+      key: 's',
+      ctrl: true,
+      action: () => {
+        if (showForm) {
+          handleSubmit();
+        }
+      },
+      label: 'Guardar cliente',
+    },
+    {
+      key: 'Escape',
+      action: () => {
+        if (showHistory) {
+          setShowHistory(false);
+          setSelectedClient(null);
+        } else if (showForm) {
+          setShowForm(false);
+        }
+      },
+      label: 'Cancelar / cerrar',
+    },
+  ]);
 
   const handleEdit = (client) => {
     setEditingClient(client);
@@ -105,27 +143,28 @@ const ClientSmart = () => {
   const purchases = historyData?.data || [];
 
   return (
-    <div className="p-6 bg-[#DAFFED]/20 min-h-screen">
+    <div className="p-6 bg-surface-container-low/20 min-h-screen">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-black text-[#473198]">Clientes</h1>
-          <p className="text-[#473198]/60 mt-1">Gestion de clientes</p>
+          <h1 className="text-3xl font-black text-primary">Clientes</h1>
+          <p className="text-primary/60 mt-1">Gestion de clientes</p>
         </div>
-        <Button variant="primary" onClick={() => { setEditingClient(null); resetForm(); setShowForm(!showForm); }}>
-          {showForm ? 'Cancelar' : '+ Nuevo Cliente'}
-        </Button>
+         <Button variant="primary" onClick={() => { setEditingClient(null); resetForm(); setShowForm(!showForm); }} title="Nuevo Cliente [Alt+N]">
+           {showForm ? 'Cancelar' : <><span>+ Nuevo Cliente</span> <ShortcutBadge keys="Alt+N" /></>}
+         </Button>
+
       </div>
 
       {showForm && (
         <Card className="p-6 mb-6">
-          <h3 className="text-lg font-bold text-[#473198] mb-4">{editingClient ? 'Editar Cliente' : 'Nuevo Cliente'}</h3>
+          <h3 className="text-lg font-bold text-primary mb-4">{editingClient ? 'Editar Cliente' : 'Nuevo Cliente'}</h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold text-[#473198] mb-1">Tipo Documento</label>
+              <label className="block text-sm font-bold text-primary mb-1">Tipo Documento</label>
               <select
                 value={formData.tipo_documento}
                 onChange={(e) => setFormData({ ...formData, tipo_documento: e.target.value })}
-                className="w-full px-4 py-2 border border-[#9BF3F0]/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#473198]/20"
+                className="w-full px-4 py-2 border border-primary-container/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
               >
                 <option value="">Seleccionar</option>
                 <option value="CC">Cedula de Ciudadania</option>
@@ -135,46 +174,50 @@ const ClientSmart = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#473198] mb-1">Numero Documento *</label>
-              <input
-                type="text"
-                required
-                value={formData.numero_documento}
-                onChange={(e) => setFormData({ ...formData, numero_documento: e.target.value })}
-                className="w-full px-4 py-2 border border-[#9BF3F0]/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#473198]/20"
-              />
+              <label className="block text-sm font-bold text-primary mb-1">Numero Documento *</label>
+               <input
+                 type="text"
+                 required
+                 value={formData.numero_documento}
+                 onChange={(e) => setFormData({ ...formData, numero_documento: e.target.value })}
+                 className="w-full px-4 py-2 border border-primary-container/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+               />
+
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-bold text-[#473198] mb-1">Nombre / Razon Social *</label>
-              <input
-                type="text"
-                required
-                value={formData.razon_social_o_nombre}
-                onChange={(e) => setFormData({ ...formData, razon_social_o_nombre: e.target.value })}
-                className="w-full px-4 py-2 border border-[#9BF3F0]/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#473198]/20"
-              />
+              <label className="block text-sm font-bold text-primary mb-1">Nombre / Razon Social *</label>
+               <input
+                 type="text"
+                 required
+                 value={formData.razon_social_o_nombre}
+                 onChange={(e) => setFormData({ ...formData, razon_social_o_nombre: e.target.value })}
+                 className="w-full px-4 py-2 border border-primary-container/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+               />
+
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#473198] mb-1">Email</label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-2 border border-[#9BF3F0]/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#473198]/20"
-              />
+              <label className="block text-sm font-bold text-primary mb-1">Email</label>
+               <input
+                 type="email"
+                 value={formData.email}
+                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                 className="w-full px-4 py-2 border border-primary-container/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+               />
+
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#473198] mb-1">Telefono</label>
-              <input
-                type="text"
-                value={formData.telefono}
-                onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
-                className="w-full px-4 py-2 border border-[#9BF3F0]/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#473198]/20"
-              />
+              <label className="block text-sm font-bold text-primary mb-1">Telefono</label>
+               <input
+                 type="text"
+                 value={formData.telefono}
+                 onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+                 className="w-full px-4 py-2 border border-primary-container/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+               />
+
             </div>
             <div className="md:col-span-2">
-              <Button type="submit" variant="primary" isLoading={createMutation.isLoading || updateMutation.isLoading}>
-                {editingClient ? 'Actualizar Cliente' : 'Crear Cliente'}
+              <Button type="submit" variant="primary" isLoading={createMutation.isPending || updateMutation.isPending}>
+                {editingClient ? 'Actualizar Cliente' : 'Crear Cliente'} <ShortcutBadge keys="Ctrl+S" />
               </Button>
             </div>
           </form>
@@ -183,14 +226,14 @@ const ClientSmart = () => {
 
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#473198] border-t-transparent"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
         </div>
       ) : (
         <Card className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-xs font-bold text-[#473198]/50 uppercase tracking-wider bg-[#DAFFED]/30 border-b border-[#9BF3F0]/20">
+                <tr className="text-left text-xs font-bold text-primary/50 uppercase tracking-wider bg-surface-container-low/30 border-b border-primary-container/20">
                   <th className="px-6 py-4">Nombre</th>
                   <th className="px-6 py-4">Documento</th>
                   <th className="px-6 py-4">Email</th>
@@ -198,18 +241,19 @@ const ClientSmart = () => {
                   <th className="px-6 py-4 text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#9BF3F0]/10">
+                   <tbody className="divide-y divide-primary-container/10">
+
                 {clients.length > 0 ? clients.map((c) => (
-                  <tr key={c.id} className="hover:bg-[#DAFFED]/30 transition-colors">
-                    <td className="px-6 py-4 font-bold text-[#473198]">{c.razon_social_o_nombre}</td>
-                    <td className="px-6 py-4 text-sm text-[#473198]/60">{c.numero_documento}</td>
-                    <td className="px-6 py-4 text-sm text-[#473198]/60">{c.email || '—'}</td>
-                    <td className="px-6 py-4 text-sm text-[#473198]/60">{c.telefono || '—'}</td>
+                  <tr key={c.id} className="hover:bg-surface-container-low/30 transition-colors">
+                    <td className="px-6 py-4 font-bold text-primary">{c.razon_social_o_nombre}</td>
+                    <td className="px-6 py-4 text-sm text-primary/60">{c.numero_documento}</td>
+                    <td className="px-6 py-4 text-sm text-primary/60">{c.email || '—'}</td>
+                    <td className="px-6 py-4 text-sm text-primary/60">{c.telefono || '—'}</td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleViewHistory(c)}
-                          className="p-1.5 text-[#473198]/50 hover:text-[#473198] transition-colors"
+                          className="p-1.5 text-primary/50 hover:text-primary transition-colors"
                           title="Ver historial"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -218,7 +262,7 @@ const ClientSmart = () => {
                         </button>
                         <button
                           onClick={() => handleEdit(c)}
-                          className="p-1.5 text-[#473198]/50 hover:text-[#473198] transition-colors"
+                          className="p-1.5 text-primary/50 hover:text-primary transition-colors"
                           title="Editar"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -239,7 +283,7 @@ const ClientSmart = () => {
                   </tr>
                 )) : (
                   <tr>
-                    <td colSpan="5" className="px-6 py-12 text-center text-[#473198]/40">
+                    <td colSpan="5" className="px-6 py-12 text-center text-primary/40">
                       No se encontraron clientes
                     </td>
                   </tr>
@@ -254,13 +298,14 @@ const ClientSmart = () => {
       {showHistory && selectedClient && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <Card className="w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between p-6 border-b border-[#9BF3F0]/20">
+               <div className="flex items-center justify-between p-6 border-b border-primary-container/20">
+
               <div>
-                <h3 className="text-xl font-black text-[#473198]">Historial de Compras</h3>
-                <p className="text-sm text-[#473198]/60">{selectedClient.razon_social_o_nombre}</p>
+                <h3 className="text-xl font-black text-primary">Historial de Compras</h3>
+                <p className="text-sm text-primary/60">{selectedClient.razon_social_o_nombre}</p>
               </div>
-              <button onClick={() => { setShowHistory(false); setSelectedClient(null); }} className="p-2 hover:bg-[#DAFFED]/50 rounded-xl transition-colors">
-                <svg className="w-5 h-5 text-[#473198]/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <button onClick={() => { setShowHistory(false); setSelectedClient(null); }} className="p-2 hover:bg-surface-container-low/50 dark:bg-surface-container-lowest/50 rounded-xl transition-colors">
+                <svg className="w-5 h-5 text-primary/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -268,29 +313,29 @@ const ClientSmart = () => {
             <div className="overflow-y-auto flex-1 p-6">
               {historyLoading ? (
                 <div className="flex justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-4 border-[#473198] border-t-transparent"></div>
+                  <div className="animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent"></div>
                 </div>
               ) : purchases.length > 0 ? (
                 <table className="w-full">
                   <thead>
-                    <tr className="text-left text-xs font-bold text-[#473198]/50 uppercase tracking-wider border-b border-[#9BF3F0]/20">
+                    <tr className="text-left text-xs font-bold text-primary/50 uppercase tracking-wider border-b border-primary-container/20">
                       <th className="pb-3 pr-4">Documento</th>
                       <th className="pb-3 text-right">Total</th>
                       <th className="pb-3 text-right">Fecha</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#9BF3F0]/10">
+                  <tbody className="divide-y divide-primary-container/10">
                     {purchases.map((p) => (
-                      <tr key={p.id} className="hover:bg-[#DAFFED]/30">
-                        <td className="py-3 pr-4 text-sm font-bold text-[#473198]">{p.numero_documento}</td>
-                        <td className="py-3 text-sm font-black text-[#473198] text-right">${Number(p.total).toLocaleString()}</td>
-                        <td className="py-3 text-sm text-[#473198]/50 text-right">{new Date(p.created_at).toLocaleDateString('es-CO')}</td>
+                      <tr key={p.id} className="hover:bg-surface-container-low/30">
+                        <td className="py-3 pr-4 text-sm font-bold text-primary">{p.numero_documento}</td>
+                        <td className="py-3 text-sm font-black text-primary text-right">${Number(p.total).toLocaleString()}</td>
+                        <td className="py-3 text-sm text-primary/50 text-right">{new Date(p.created_at).toLocaleDateString('es-CO')}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               ) : (
-                <p className="text-center text-[#473198]/40 py-8">No hay compras registradas</p>
+                <p className="text-center text-primary/40 py-8">No hay compras registradas</p>
               )}
             </div>
           </Card>

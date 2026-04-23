@@ -88,17 +88,17 @@ export const LoginFormSmart = () => {
         isLoading={isLoading}
       />
       <div className="mt-8 flex flex-col space-y-4 text-center">
-        <Link 
-          to="/forgot-password" 
-          className="text-[#473198]/60 hover:text-[#473198] text-sm font-bold transition-all duration-200"
-        >
-          ¿Olvidaste tu contraseña?
-        </Link>
-        <p className="text-[#473198]/40 text-xs font-bold uppercase tracking-widest">
-          ¿No tienes una cuenta?{' '}
-          <Link 
-            to="/register" 
-            className="text-[#473198] hover:text-[#4A0D67] border-b-2 border-[#9BF3F0] transition-all duration-200"
+         <Link 
+           to="/forgot-password" 
+           className="text-primary/60 hover:text-primary text-sm font-bold transition-all duration-200"
+         >
+           ¿Olvidaste tu contraseña?
+         </Link>
+         <p className="text-primary/40 text-xs font-bold uppercase tracking-widest">
+           ¿No tienes una cuenta?{' '}
+           <Link 
+             to="/register" 
+             className="text-primary hover:text-on-surface border-b-2 border-surface-container-low transition-all duration-200"
           >
             Regístrate aquí
           </Link>

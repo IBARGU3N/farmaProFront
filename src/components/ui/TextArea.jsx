@@ -98,8 +98,9 @@ export const TextArea = forwardRef(({
         whileTap={{ scale: 0.98 }}
         htmlFor={label.toLowerCase().replace(/\s+/g, '-')}
         className={`block text-sm font-medium mb-1 transition-colors duration-200 ${
-          isFocused ? 'text-[#4A0D67]' : 'text-[#473198]'
+          isFocused ? 'text-primary' : 'text-primary/70'
         }`}
+
       >
         {label}
       </motion.label>
@@ -113,18 +114,19 @@ export const TextArea = forwardRef(({
           onChange={handleChange}
           onPaste={handlePaste}
           onKeyDown={handleKeyDown}
-          className={`w-full min-h-[120px] px-4 py-3 bg-[#DAFFED]/20 border-2 rounded-xl transition-all duration-200 ${
+          className={`w-full min-h-[120px] px-4 py-3 bg-surface-container-low/20 border-2 rounded-xl transition-all duration-200 ${
             error
               ? 'border-red-400 focus:border-red-500 focus:ring-red-100'
-              : isFocused
-                ? 'border-[#9BF3F0] ring-4 ring-[#9BF3F0]/20'
-                : 'border-[#9BF3F0]/30 group-hover:border-[#9BF3F0]/60'
-          } placeholder:text-[#473198]/30 text-[#473198] focus:outline-none`}
+               : isFocused
+                 ? 'border-secondary ring-4 ring-secondary/20'
+                 : 'border-secondary/30 group-hover:border-secondary/60'
+
+          } placeholder:text-primary/30 text-primary focus:outline-none`}
           maxLength={maxLength}
           {...rest}
         />
         {maxLength && (
-          <div className="mt-2 text-right text-[11px] text-[#473198]/70">
+          <div className="mt-2 text-right text-[11px] text-primary/70">
             {currentLength}/{maxLength}
           </div>
         )}

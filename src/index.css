@@ -1,74 +1,118 @@
 @import "tailwindcss";
 
-@theme {
-  /* Primary Palette */
-  --color-primary: #006875;
-  --color-primary-container: #00e5ff;
-  --color-on-primary: #ffffff;
+:root {
+  /* Brand Colors - Fed by uiStore */
+  --brand-primary: #006875;
+  --brand-secondary: #632ce5;
+  --brand-accent: #765a00;
+  --brand-bg: #f7f9fb;
 
-  /* Secondary Palette */
-  --color-secondary: #632ce5;
-  --color-secondary-container: #7c4dff;
-  --color-on-secondary: #ffffff;
+  /* Semantic Mappings - Light Mode */
+  --sys-primary: var(--brand-primary);
+  --sys-primary-container: color-mix(in srgb, var(--brand-primary), white 70%);
+  --sys-on-primary: #ffffff;
+  
+  --sys-secondary: var(--brand-secondary);
+  --sys-secondary-container: color-mix(in srgb, var(--brand-secondary), white 70%);
+  --sys-on-secondary: #ffffff;
 
-  /* Tertiary Palette */
-  --color-tertiary: #765a00;
-  --color-tertiary-container: #fec931;
+  --sys-tertiary: var(--brand-accent);
+  --sys-tertiary-container: color-mix(in srgb, var(--brand-accent), white 70%);
 
-  /* Surface Palette */
-  --color-surface: #f7f9fb;
-  --color-surface-container-low: #f2f4f6;
-  --color-surface-container-lowest: #ffffff;
-  --color-on-surface: #191c1e;
-  --color-on-surface-variant: #3b494c;
-
-  /* Error */
-  --color-error: #ba1a1a;
-
-  /* Typography */
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-headline: "Manrope", sans-serif;
+  --sys-surface: var(--brand-bg);
+  --sys-surface-container-low: color-mix(in srgb, var(--brand-bg), black 2%);
+  --sys-surface-container-lowest: #ffffff;
+  --sys-on-surface: #191c1e;
+  --sys-on-surface-variant: #3b494c;
+  
+  --sys-error: #ba1a1a;
 }
 
-@layer base {
-  body {
-    @apply bg-surface text-on-surface font-sans;
-    background-color: var(--color-surface);
-    color: var(--color-on-surface);
-    transition: background-color 0.5s ease, color 0.5s ease;
-    min-height: 100vh;
-  }
+:root.dark {
+  /* Semantic Mappings - Dark Mode */
+  /* We use color-mix to ensure brand colors are accessible on pure black */
+  --sys-primary: color-mix(in srgb, var(--brand-primary), white 30%);
+  --sys-primary-container: var(--brand-primary);
+  --sys-on-primary: #000000;
+  
+  --sys-secondary: color-mix(in srgb, var(--brand-secondary), white 30%);
+  --sys-secondary-container: var(--brand-secondary);
+  --sys-on-secondary: #000000;
+
+  --sys-tertiary: color-mix(in srgb, var(--brand-accent), white 30%);
+  --sys-tertiary-container: var(--brand-accent);
+
+  --sys-surface: #000000; /* PURE BLACK BACKGROUND */
+  --sys-surface-container-low: #0a0a0a;
+  --sys-surface-container-lowest: #050505;
+  --sys-on-surface: #f7f9fb;
+  --sys-on-surface-variant: #a0a8ac;
+  
+  --sys-error: #ff5449;
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-headline: "Manrope", sans-serif;
+
+  /* Modern Mappings */
+  --color-primary: var(--sys-primary);
+  --color-primary-container: var(--sys-primary-container);
+  --color-on-primary: var(--sys-on-primary);
+  
+  --color-secondary: var(--sys-secondary);
+  --color-secondary-container: var(--sys-secondary-container);
+  --color-on-secondary: var(--sys-on-secondary);
+
+  --color-tertiary: var(--sys-tertiary);
+  --color-tertiary-container: var(--sys-tertiary-container);
+
+  --color-surface: var(--sys-surface);
+  --color-surface-container-low: var(--sys-surface-container-low);
+  --color-surface-container-lowest: var(--sys-surface-container-lowest);
+  --color-on-surface: var(--sys-on-surface);
+  --color-on-surface-variant: var(--sys-on-surface-variant);
+  
+  --color-error: var(--sys-error);
+
+  /* Legacy Mappings (Overrides exact colors from old scheme automatically) */
+  --color-daffed: var(--sys-surface);
+  --color-9bf3f0: var(--sys-surface-container-low);
+  --color-473198: var(--sys-primary);
+  --color-4a0d67: var(--sys-on-surface);
+  --color-adfc92: var(--sys-primary-container);
+  
+  /* Fallbacks para si algo todavía usa --theme-x crudo */
+  --color-theme-bg: var(--sys-surface);
+  --color-theme-primary: var(--sys-primary);
+  --color-theme-secondary: var(--sys-surface-container-low);
+}
+
+body {
+  background-color: var(--sys-surface);
+  color: var(--sys-primary);
+  transition: background-color 0.5s ease, color 0.5s ease;
+  min-height: 100vh;
 }
 
 @layer components {
-  /* Glassmorphism Effect from Reference */
+  /* Glass adaptivo */
   .neo-glass {
-    @apply bg-surface/70 backdrop-blur-md border border-white/20 shadow-lg;
-    background-color: rgba(247, 249, 251, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    @apply bg-surface/70 border border-on-surface/10 shadow-[0px_20px_40px_rgba(0,0,0,0.06)];
+    backdrop-filter: blur(24px);
+  }
+  
+  :root.dark .neo-glass {
+    @apply bg-surface-container-low/70 border-on-surface/20 shadow-[0px_20px_40px_rgba(0,229,255,0.02)];
   }
 
   .bg-clinical-ether {
-    background: radial-gradient(circle at 0% 0%, rgba(0, 229, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(99, 44, 229, 0.1) 0%, transparent 50%);
+    background: radial-gradient(circle at 0% 0%, rgba(0, 229, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(124, 77, 255, 0.08) 0%, transparent 40%);
+  }
+  
+  :root.dark .bg-clinical-ether {
+    background: radial-gradient(circle at 0% 0%, rgba(0, 229, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(124, 77, 255, 0.15) 0%, transparent 40%);
   }
 }
-
-/* Dark Mode Overrides */
-.dark body {
-  --color-surface: #000000;
-  --color-surface-container-low: #0a0a0a;
-  --color-surface-container-lowest: #050505;
-  --color-on-surface: #f7f9fb;
-  --color-on-surface-variant: #a0a8ac;
-
-  --color-error: #ff5449;
-}
-
-.dark .neo-glass {
-  background-color: rgba(0, 0, 0, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-}
-
