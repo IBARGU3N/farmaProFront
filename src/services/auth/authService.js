@@ -1,42 +1,48 @@
-import { supabase } from '../../lib/supabase';
+import api from './api';
 
 export const authService = {
-  // Login user
   login: async (credentials) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: credentials.email,
-      password: credentials.password,
-    });
-    if (error) throw error;
-    return data;
+    const response = await api.post('/auth/login', credentials);
+    return response.data;
   },
-  
-  // Register new user
+
   register: async (userData) => {
-    const { data, error } = await supabase.auth.signUp({
-      email: userData.email,
-      password: userData.password,
-      options: {
-        data: {
-          full_name: userData.nombre_completo,
-          rol: userData.rol || 'usuario',
-        },
-      },
-    });
-    if (error) throw error;
-    return data;
+    const response = await api.post('/auth/register', userData);
+    return response.data;
   },
-  
-  // Logout user
+
   logout: async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    const response = await api.post('/auth/logout');
+    return response.data;
   },
-  
-  // Check if user is authenticated
+
   checkAuth: async () => {
-    const { data: { user }, error } = await supabase.auth.getUser();
-    if (error) throw error;
-    return user;
+    const response = await api.get('/auth/me');
+    return response.data;
+  },
+
+  refresh: async () => {
+    const response = await api.post('/auth/refresh');
+    return response.data;
+  },
+
+  forgotPassword: async (email) => {
+    const response = await api.post('/auth/forgot-password', { email });
+    return response.data;
+  },
+
+  resetPassword: async (data) => {
+    const response = await api.post('/auth/reset-password', data);
+    return response.data;
+  },
+
+  verify2FA: async (code) => {
+    const response = await api.post('/auth/verify-2fa', { code });
+    return response.data;
+  },
+
+  setup2FA: async () => {
+    const response = await api.post('/auth/setup-2fa');
+    return response.data;
   },
 };
