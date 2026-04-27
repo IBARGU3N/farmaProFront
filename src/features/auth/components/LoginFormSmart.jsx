@@ -41,8 +41,8 @@ export const LoginFormSmart = () => {
   const { mutate: login, isLoading } = useMutation({
     mutationFn: authService.login,
     onSuccess: (response) => {
-      if (response.data.success) {
-        const payload = response.data.data;
+      if (response?.success && response?.data) {
+        const payload = response.data;
         authStorage.saveTokens(payload.access_token, payload.refresh_token);
         
         // Update Zustand Global State

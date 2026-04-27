@@ -44,8 +44,10 @@ export const RegisterFormSmart = () => {
   const { mutate: registerUser, isLoading } = useMutation({
     mutationFn: authService.register,
     onSuccess: (response) => {
-      if (response?.user) {
-        useAuthStore.getState().setUser(response.user);
+      if (response?.success && response?.data) {
+        const payload = response.data;
+        authStorage.saveTokens(payload.access_token, payload.refresh_token);
+        useAuthStore.getState().setUser(payload.user);
         queryClient.invalidateQueries({ queryKey: ['auth'] });
         navigate('/dashboard', { replace: true });
         showToast('Cuenta creada con éxito. ¡Bienvenido a FarmaPro!', 'success');
@@ -59,9 +61,11 @@ export const RegisterFormSmart = () => {
   const onSubmit = (data) => {
     // Map form data to service expectations
     const userData = {
+      name: data.name,
       email: data.email,
       password: data.password,
-      nombre_completo: data.name,
+      password_confirmation: data.password_confirmation,
+      sucursal_id: 1, // Default sucursal for local testing
     };
     registerUser(userData);
   };

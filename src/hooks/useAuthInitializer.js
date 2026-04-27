@@ -13,14 +13,17 @@ export function useAuthInitializer() {
     let cancelled = false;
 
     authService.checkAuth().then((response) => {
-      if (!cancelled && response.data) {
-        const userData = response.data.data || response.data;
-        setUser({
-          id: userData.id,
-          name: userData.name || userData.nombre_completo || 'Usuario',
-          email: userData.email,
-          rol: userData.rol || 'usuario',
-        });
+      if (!cancelled) {
+        const body = response?.data || response;
+        const userData = body?.data || body;
+        if (userData) {
+          setUser({
+            id: userData.id,
+            name: userData.name || userData.nombre_completo || 'Usuario',
+            email: userData.email,
+            rol: userData.rol || 'usuario',
+          });
+        }
       }
     }).catch(() => {
       if (!cancelled) {
