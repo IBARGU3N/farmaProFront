@@ -149,10 +149,12 @@ const POSSmart = () => {
       tercero_id: client?.id || null,
       descuento: discount,
       metodo_pago: paymentMethod || 'EFECTIVO',
+      monto_pagado: paymentMethod === 'EFECTIVO' ? parseFloat(cashReceived || 0) : getTotal(),
+      referencia_pago: paymentReference || null,
       usuario_id: user?.id,
       is_test: true,
     };
-
+    
     toast.loading('Procesando venta...', { id: 'sale-processing' });
     processSaleMutation.mutate(saleData, {
       onSettled: () => toast.dismiss('sale-processing'),
@@ -263,23 +265,23 @@ const POSSmart = () => {
              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                <ShortcutBadge keys="/" />
              </div>
-             {searchResults.length > 0 && (
-              <div className="absolute z-10 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-secondary/30 overflow-hidden max-h-80 overflow-y-auto">
-                {searchResults.map((product) => (
-                  <button
-                    key={product.id}
-                    onClick={() => handleAddToCart(product)}
-                    className="w-full px-6 py-4 flex items-center justify-between hover:bg-surface-container-low/50 dark:bg-surface-container-lowest/50 transition-colors text-left border-b border-primary-container/10 last:border-0"
-                  >
-                    <div>
-                      <p className="font-bold text-primary">{product.nombre}</p>
-                      <p className="text-xs text-primary/50">{product.codigo_barras}</p>
-                    </div>
-                    <span className="font-black text-primary">${product.precio_venta?.toLocaleString() || 0}</span>
-                  </button>
-                ))}
-              </div>
-            )}
+              {searchResults.length > 0 && (
+               <div className="absolute z-10 w-full mt-2 bg-surface rounded-2xl shadow-2xl border border-secondary/30 overflow-hidden max-h-80 overflow-y-auto">
+                 {searchResults.map((product) => (
+                   <button
+                     key={product.id}
+                     onClick={() => handleAddToCart(product)}
+                     className="w-full px-6 py-4 flex items-center justify-between hover:bg-surface-container-low/50 dark:bg-surface-container-lowest/50 transition-colors text-left border-b border-primary-container/10 last:border-0"
+                   >
+                     <div>
+                       <p className="font-bold text-primary">{product.nombre}</p>
+                       <p className="text-xs text-primary/50">{product.codigo_barras}</p>
+                     </div>
+                     <span className="font-black text-primary">${product.precio_venta?.toLocaleString() || 0}</span>
+                   </button>
+                 ))}
+               </div>
+             )}
           </div>
 
            <div className="grid grid-cols-3 gap-4">
@@ -365,27 +367,27 @@ const POSSmart = () => {
                        <p className="text-xs text-primary/50">${item.precio.toLocaleString()} c/u</p>
                      </div>
                      <div className="flex items-center gap-2">
-                       <button
-                         onClick={() => updateQuantity(item.producto_id, item.quantity - 1)}
-                         className="w-7 h-7 rounded-full bg-white border border-secondary/30 flex items-center justify-center text-primary font-bold hover:bg-secondary/20"
-                       >
-                         −
-                       </button>
-                       <span className="text-sm font-bold text-primary w-6 text-center">{item.quantity}</span>
-                       <button
-                         onClick={() => updateQuantity(item.producto_id, item.quantity + 1)}
-                         className="w-7 h-7 rounded-full bg-white border border-secondary/30 flex items-center justify-center text-primary font-bold hover:bg-secondary/20"
-                       >
-                         +
-                       </button>
-                       <button
-                         onClick={() => removeItem(item.producto_id)}
-                         className="ml-2 text-red-400 hover:text-red-600"
-                       >
-                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                         </svg>
-                       </button>
+                        <button
+                          onClick={() => updateQuantity(item.producto_id, item.quantity - 1)}
+                          className="w-7 h-7 rounded-full bg-surface border border-secondary/30 flex items-center justify-center text-primary font-bold hover:bg-secondary/20"
+                        >
+                          −
+                        </button>
+                        <span className="text-sm font-bold text-primary w-6 text-center">{item.quantity}</span>
+                        <button
+                          onClick={() => updateQuantity(item.producto_id, item.quantity + 1)}
+                          className="w-7 h-7 rounded-full bg-surface border border-secondary/30 flex items-center justify-center text-primary font-bold hover:bg-secondary/20"
+                        >
+                          +
+                        </button>
+                        <button
+                          onClick={() => removeItem(item.producto_id)}
+                          className="ml-2 text-error hover:text-error/80"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
                      </div>
                    </div>
                  ))
@@ -478,6 +480,8 @@ const POSSmart = () => {
       setPaymentMethod={setPaymentMethod}
       cashReceived={cashReceived}
       setCashReceived={setCashReceived}
+      paymentReference={paymentReference}
+      setPaymentReference={setPaymentReference}
       change={Math.max(0, parseFloat(cashReceived) - getTotal())}
       isLoading={processSaleMutation.isPending || initiateMPMutation.isPending}
     />

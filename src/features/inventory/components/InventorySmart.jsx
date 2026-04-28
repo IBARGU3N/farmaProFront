@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { productService, inventoryService } from '../../../services/inventory/inventoryService';
 import { useDeleteProduct, useLaboratorios } from '../hooks/useInventory';
@@ -73,10 +73,10 @@ const InventorySmart = () => {
   };
 
   const getStockBadge = (stock) => {
-    if (stock <= 0) return { text: 'Sin stock', class: 'bg-gray-100 text-gray-700' };
-    if (stock <= 10) return { text: 'Stock bajo', class: 'bg-red-100 text-red-700' };
-    if (stock <= 50) return { text: 'Normal', class: 'bg-yellow-100 text-yellow-700' };
-    return { text: 'Disponible', class: 'bg-green-100 text-green-700' };
+    if (stock <= 0) return { text: 'Sin stock', class: 'bg-neutral-container text-neutral' };
+    if (stock <= 10) return { text: 'Stock bajo', class: 'bg-error-container text-error' };
+    if (stock <= 50) return { text: 'Normal', class: 'bg-warning-container text-warning' };
+    return { text: 'Disponible', class: 'bg-success-container text-success' };
   };
 
   useKeyboardShortcuts([
@@ -172,13 +172,13 @@ const InventorySmart = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-surface-container-low/10">
-                {products.length > 0 ? products.map((p) => {
+                {products.length > 0 ? products.map((p, index) => {
                   const stock = p.total_stock || 0;
                   const badge = getStockBadge(stock);
                   const isExpanded = expandedProductId === p.id;
                   return (
-                    <>
-                      <tr key={p.id} className="hover:bg-surface/30 transition-colors cursor-pointer" onClick={() => setExpandedProductId(isExpanded ? null : p.id)}>
+                    <React.Fragment key={p.id || index}>
+                      <tr className="hover:bg-surface/30 transition-colors cursor-pointer" onClick={() => setExpandedProductId(isExpanded ? null : p.id)}>
                         <td className="px-6 py-4">
                           <svg className={`w-4 h-4 text-primary/40 transition-transform ${isExpanded ? 'rotate-90' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -222,7 +222,7 @@ const InventorySmart = () => {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </React.Fragment>
                   );
                 }) : (
                   <tr>

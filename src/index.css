@@ -26,29 +26,37 @@
   --sys-on-surface-variant: #3b494c;
   
   --sys-error: #ba1a1a;
+  --sys-success: #2e7d32;
+  --sys-warning: #ed6c02;
+  --sys-info: #0288d1;
+  --sys-neutral: #757575;
 }
 
 :root.dark {
   /* Semantic Mappings - Dark Mode */
-  /* We use color-mix to ensure brand colors are accessible on pure black */
-  --sys-primary: color-mix(in srgb, var(--brand-primary), white 30%);
+  /* We use color-mix to ensure brand colors are accessible on dark surfaces */
+  --sys-primary: color-mix(in srgb, var(--brand-primary), white 40%);
   --sys-primary-container: var(--brand-primary);
   --sys-on-primary: #000000;
   
-  --sys-secondary: color-mix(in srgb, var(--brand-secondary), white 30%);
+  --sys-secondary: color-mix(in srgb, var(--brand-secondary), white 40%);
   --sys-secondary-container: var(--brand-secondary);
   --sys-on-secondary: #000000;
-
-  --sys-tertiary: color-mix(in srgb, var(--brand-accent), white 30%);
-  --sys-tertiary-container: var(--brand-accent);
-
-  --sys-surface: #000000; /* PURE BLACK BACKGROUND */
-  --sys-surface-container-low: #0a0a0a;
-  --sys-surface-container-lowest: #050505;
-  --sys-on-surface: #f7f9fb;
-  --sys-on-surface-variant: #a0a8ac;
   
-  --sys-error: #ff5449;
+  --sys-tertiary: color-mix(in srgb, var(--brand-accent), white 40%);
+  --sys-tertiary-container: var(--brand-accent);
+  
+  --sys-surface: #0a0c10; /* Ultra-Deep Charcoal/Navy */
+  --sys-surface-container-low: #161b22;
+  --sys-surface-container-lowest: #0d1117;
+  --sys-on-surface: #f0f6fc;
+  --sys-on-surface-variant: #8b949e;
+  
+  --sys-error: #ffb4ab;
+  --sys-success: #c8e6c9;
+  --sys-warning: #ffe0b2;
+  --sys-info: #b3e5fc;
+  --sys-neutral: #cfd8dc;
 }
 
 @theme {
@@ -63,10 +71,10 @@
   --color-secondary: var(--sys-secondary);
   --color-secondary-container: var(--sys-secondary-container);
   --color-on-secondary: var(--sys-on-secondary);
-
+  
   --color-tertiary: var(--sys-tertiary);
   --color-tertiary-container: var(--sys-tertiary-container);
-
+  
   --color-surface: var(--sys-surface);
   --color-surface-container-low: var(--sys-surface-container-low);
   --color-surface-container-lowest: var(--sys-surface-container-lowest);
@@ -74,6 +82,11 @@
   --color-on-surface-variant: var(--sys-on-surface-variant);
   
   --color-error: var(--sys-error);
+  --color-success: var(--sys-success);
+  --color-warning: var(--sys-warning);
+  --color-info: var(--sys-info);
+  --color-neutral: var(--sys-neutral);
+
 
   /* Legacy Mappings (Overrides exact colors from old scheme automatically) */
   --color-daffed: var(--sys-surface);
@@ -90,7 +103,7 @@
 
 body {
   background-color: var(--sys-surface);
-  color: var(--sys-primary);
+  color: var(--sys-on-surface);
   transition: background-color 0.5s ease, color 0.5s ease;
   min-height: 100vh;
 }

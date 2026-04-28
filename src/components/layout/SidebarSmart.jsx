@@ -7,6 +7,7 @@ import { Sidebar } from './Sidebar';
 const navItems = [
   { to: '/dashboard', end: true, iconKey: 'dashboard', label: 'Dashboard' },
   { to: '/pos', end: true, iconKey: 'pos', label: 'Punto de Venta' },
+  { to: '/pos/resolutions', end: true, iconKey: 'pos', label: 'Resoluciones' },
   { to: '/inventory', end: true, iconKey: 'inventory', label: 'Inventario' },
   { to: '/clients', end: true, iconKey: 'clients', label: 'Clientes' },
   { to: '/suppliers', end: true, iconKey: 'suppliers', label: 'Proveedores' },

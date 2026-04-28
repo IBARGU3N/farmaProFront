@@ -4,6 +4,7 @@ import { authService } from '../../services/auth/authService';
 import { authStorage } from '../../lib/authStorage';
 import { useAuthStore } from '../../store/authStore';
 import useUIStore from '../../store/uiStore';
+import { useSettings } from '../../context/SettingsContext';
 import { TopBar } from './TopBar';
 import { AlertBell } from '../ui/AlertBell';
 
@@ -11,6 +12,7 @@ export const TopBarSmart = () => {
   const navigate = useNavigate();
   const { user, logout: logoutStore } = useAuthStore();
   const { theme, toggleTheme } = useUIStore();
+  const { settings } = useSettings();
   const [currentTime, setCurrentTime] = useState('');
 
   useEffect(() => {
@@ -51,6 +53,7 @@ export const TopBarSmart = () => {
       isDark={theme === 'dark'}
       onToggleDark={toggleTheme}
       AlertBellComponent={AlertBell}
+      settings={settings}
     />
   );
 };

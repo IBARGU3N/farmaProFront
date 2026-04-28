@@ -14,15 +14,16 @@ export function useAuthInitializer() {
 
     authService.checkAuth().then((response) => {
       if (!cancelled) {
-        const body = response?.data || response;
-        const userData = body?.data || body;
+        const userData = response?.user?.data || response?.user;
+        const permissions = response?.permissions || [];
+        
         if (userData) {
           setUser({
             id: userData.id,
             name: userData.name || userData.nombre_completo || 'Usuario',
             email: userData.email,
             rol: userData.rol || 'usuario',
-          });
+          }, permissions);
         }
       }
     }).catch(() => {

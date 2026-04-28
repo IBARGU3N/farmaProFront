@@ -1,13 +1,25 @@
-export const TopBar = ({ user, currentTime, onLogout, isDark, onToggleDark, AlertBellComponent }) => {
+export const TopBar = ({ user, currentTime, onLogout, isDark, onToggleDark, AlertBellComponent, settings }) => {
   return (
     <header className="bg-surface/60 backdrop-blur-md border-b border-primary/20 h-16 flex items-center justify-between px-8 sticky top-0 z-20 transition-colors duration-500">
       <div className="flex items-center gap-4">
-          <div className="text-on-surface-variant font-bold text-[10px] uppercase tracking-[0.2em] flex items-center gap-2">
-           Sistema 
-           <span className="w-1 h-1 rounded-full bg-primary opacity-100" /> 
-           Activo
+          <div className="flex items-center gap-3">
+            {settings?.logo_url && (
+              <img 
+                src={settings.logo_url} 
+                alt="Logo" 
+                className="h-10 w-10 object-contain rounded-lg" 
+              />
+            )}
+            <div className="text-on-surface-variant font-bold text-[10px] uppercase tracking-[0.2em] flex items-center gap-2">
+              <span className="text-primary text-xs lowercase normal-case font-black tracking-normal text-sm">
+                {settings?.nombre || 'Droguería'}
+              </span>
+              <span className="w-1 h-1 rounded-full bg-primary opacity-100" /> 
+              Sistema 
+              Activo
+            </div>
           </div>
-      </div>
+       </div>
       
       <div className="flex items-center space-x-4">
         {AlertBellComponent && <AlertBellComponent />}

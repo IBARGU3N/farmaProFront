@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { dashboardService } from '../../../services/dashboard/dashboardService';
 import { useAuthStore } from '../../../store/authStore';
+import { useFolios } from '../../../features/pos/hooks/useFolios';
 import {
   LineChart,
   Line,
@@ -32,7 +33,8 @@ const StatCard = ({ title, value, subtitle, icon }) => (
 
 const DashboardSmart = () => {
   const { user } = useAuthStore();
-
+  const { resolutions: folioData } = useFolios();
+ 
   const { data: statsData, isLoading: statsLoading, isError: statsError } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: () => dashboardService.getStats(),
@@ -154,7 +156,7 @@ const DashboardSmart = () => {
       </div>
 
       {/* Secondary KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <StatCard
           title="Productos"
           value={stats?.summary?.total_products || 0}
@@ -185,6 +187,32 @@ const DashboardSmart = () => {
             </svg>
           }
         />
+        {(() => {
+            const resolutionsArray = Array.isArray(folioData) ? folioData : (folioData?.data || []);
+            const activeRes = resolutionsArray.find(r => r.is_active);
+            if (!activeRes) return null;
+            const consumption = ((activeRes.current_number - activeRes.initial_number) / (activeRes.final_number - activeRes.initial_number)) * 100;
+            let badgeColor = 'bg-success-container text-success';
+            if (consumption >= 90) badgeColor = 'bg-error-container text-error';
+            else if (consumption >= 70) badgeColor = 'bg-warning-container text-warning';
+
+            return (
+                <StatCard
+                    title={`Folios ${activeRes.document_type}`}
+                    value={`${activeRes.prefix}`}
+                    subtitle={`Consumo: ${consumption.toFixed(1)}%`}
+                    icon={
+                        <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                            consumption >= 90 ? 'bg-error-container text-error' : 
+                            consumption >= 70 ? 'bg-warning-container text-warning' : 
+                            'bg-success-container text-success'
+                        }`}>
+                            {consumption >= 90 ? 'CRÍTICO' : consumption >= 70 ? 'ALERTA' : 'OK'}
+                        </span>
+                    }
+                />
+            );
+        })()}
       </div>
 
       {/* Charts Row */}
@@ -277,7 +305,7 @@ const DashboardSmart = () => {
                     <p className="text-sm font-bold text-primary">{item.nombre}</p>
                     <p className="text-xs text-on-surface-variant">{item.codigo_barras}</p>
                   </div>
-                  <span className="px-3 py-1 bg-error/10 text-error text-xs font-bold rounded-full">
+                  <span className="px-3 py-1 bg-error-container text-error text-xs font-bold rounded-full">
                     {item.total_stock} uds
                   </span>
                 </div>
@@ -298,12 +326,12 @@ const DashboardSmart = () => {
           ) : expiringSoon.length > 0 ? (
             <div className="space-y-3 max-h-64 overflow-y-auto">
               {expiringSoon.slice(0, 10).map((item) => (
-                <div key={item.id} className="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl">
+                <div key={item.id} className="flex items-center justify-between p-3 bg-surface-container-low/50 dark:bg-surface-container-lowest/50 rounded-xl">
                   <div>
                     <p className="text-sm font-bold text-primary">{item.producto_nombre || item.producto?.nombre || 'Sin nombre'}</p>
                     <p className="text-xs text-on-surface-variant">Lote: {item.lote}</p>
                   </div>
-                  <span className="px-3 py-1 bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-200 text-xs font-bold rounded-full">
+                  <span className="px-3 py-1 bg-warning-container text-warning text-xs font-bold rounded-full">
                     {item.fecha_vencimiento ? format(new Date(item.fecha_vencimiento), 'dd MMM', { locale: es }) : '—'}
                   </span>
                 </div>

@@ -17,8 +17,12 @@ export const authService = {
   },
 
   checkAuth: async () => {
-    const response = await api.get('/auth/me');
-    return response.data;
+    const userResponse = await api.get('/auth/me');
+    const permissionsResponse = await api.get('/auth/permissions');
+    return {
+      user: userResponse.data,
+      permissions: permissionsResponse.data.data,
+    };
   },
 
   refresh: async () => {

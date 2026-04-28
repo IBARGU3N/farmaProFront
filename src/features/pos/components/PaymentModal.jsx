@@ -4,18 +4,20 @@ import { Button } from '../../../components/ui/Button';
 import { ShortcutBadge } from '../../../components/ui/ShortcutBadge';
 
 export const PaymentModal = ({ 
-   isOpen, 
-   onClose, 
-   onConfirm, 
-   total, 
-   items,
-   paymentMethod, 
-   setPaymentMethod, 
-   cashReceived, 
-   setCashReceived, 
-   change, 
-   isLoading 
- }) => {
+    isOpen, 
+    onClose, 
+    onConfirm, 
+    total, 
+    items,
+    paymentMethod, 
+    setPaymentMethod, 
+    cashReceived, 
+    setCashReceived, 
+    paymentReference,
+    setPaymentReference,
+    change, 
+    isLoading 
+  }) => {
    if (!isOpen) return null;
 
    const iconMap = {
@@ -36,87 +38,97 @@ export const PaymentModal = ({
      ),
    };
 
-   return (
-     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-       <Card className="w-full max-w-md p-8">
-         <h3 className="text-2xl font-black text-primary mb-6">Procesar Pago</h3>
+    return (
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md p-8">
+          <h3 className="text-2xl font-black text-primary mb-6">Procesar Pago</h3>
 
-         <div className="mb-6">
-           <div className="max-h-40 overflow-y-auto mb-4 space-y-2 pr-2">
-             {items?.map((item, idx) => (
-               <div key={idx} className="flex justify-between text-sm border-b border-secondary/20 pb-1">
-                 <span className="text-primary/70">{item.quantity}x {item.nombre}</span>
-                 <span className="font-bold text-primary">${(item.precio * item.quantity).toLocaleString()}</span>
-               </div>
-             ))}
+          <div className="mb-6">
+            <div className="max-h-40 overflow-y-auto mb-4 space-y-2 pr-2">
+              {items?.map((item, idx) => (
+                <div key={idx} className="flex justify-between text-sm border-b border-secondary/20 pb-1">
+                  <span className="text-primary/70">{item.quantity}x {item.nombre}</span>
+                  <span className="font-bold text-primary">${(item.precio * item.quantity).toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-primary/50">Total a pagar</p>
+              <p className="text-4xl font-black text-primary">${(total || 0).toLocaleString()}</p>
+            </div>
+          </div>
+
+           <div className="space-y-4 mb-6">
+             <p className="text-sm font-bold text-primary">Método de pago</p>
+             <div className="grid grid-cols-3 gap-3">
+               {['EFECTIVO', 'TARJETA', 'TRANSFERENCIA'].map((method) => (
+                 <button
+                   key={method}
+                   onClick={() => setPaymentMethod(method)}
+                   className={`p-3 rounded-xl border-2 text-center font-bold text-sm transition-all ${
+                     paymentMethod === method
+                       ? 'border-primary bg-primary text-white'
+                       : 'border-secondary/30 text-primary hover:border-primary/30'
+                   }`}
+                 >
+                   {iconMap[method]}
+                   {method}
+                 </button>
+               ))}
+             </div>
            </div>
-           <div className="text-center">
-             <p className="text-sm text-primary/50">Total a pagar</p>
-             <p className="text-4xl font-black text-primary">${(total || 0).toLocaleString()}</p>
-           </div>
-         </div>
 
-         <div className="space-y-4 mb-6">
-           <p className="text-sm font-bold text-primary">Método de pago</p>
-           <div className="grid grid-cols-3 gap-3">
-             {['EFECTIVO', 'TARJETA', 'TRANSFERENCIA'].map((method) => (
-               <button
-                 key={method}
-                 onClick={() => setPaymentMethod(method)}
-                 className={`p-3 rounded-xl border-2 text-center font-bold text-sm transition-all ${
-                   paymentMethod === method
-                     ? 'border-primary bg-primary text-white'
-                     : 'border-secondary/30 text-primary hover:border-primary/30'
-                 }`}
-               >
-                 {iconMap[method]}
-                 {method}
-               </button>
-             ))}
-           </div>
-         </div>
+           {paymentMethod === 'EFECTIVO' ? (
+             <div className="mb-6">
+               <label className="text-sm font-bold text-primary mb-2 block">Efectivo recibido</label>
+               <input
+                 type="number"
+                 value={cashReceived}
+                 onChange={(e) => setCashReceived(e.target.value)}
+                 onKeyDown={(e) => {
+                   if (e.key === 'Enter' && !(paymentMethod === 'EFECTIVO' && change < 0)) {
+                     onConfirm();
+                   }
+                 }}
+                 className="w-full px-4 py-3 border-2 border-secondary/30 rounded-xl text-lg font-bold bg-surface-container-low focus:outline-none focus:ring-2 focus:ring-primary/20"
+                 placeholder="0"
+                 autoFocus
+               />
+                {change >= 0 && cashReceived && (
+                  <p className="mt-2 text-sm font-bold text-success">Cambio: ${change.toLocaleString()}</p>
+                )}
+                {change < 0 && cashReceived && (
+                  <p className="mt-2 text-sm font-bold text-error">Falta: ${Math.abs(change).toLocaleString()}</p>
+                )}
+             </div>
+           ) : (
+             <div className="mb-6">
+               <label className="text-sm font-bold text-primary mb-2 block">Referencia de Pago</label>
+               <input
+                 type="text"
+                 value={paymentReference}
+                 onChange={(e) => setPaymentReference(e.target.value)}
+                 placeholder="Ingrese la referencia o ID de transacción"
+                 className="w-full px-4 py-3 border-2 border-secondary/30 rounded-xl text-lg font-bold bg-surface-container-low focus:outline-none focus:ring-2 focus:ring-primary/20"
+               />
+             </div>
+           )}
 
-           {paymentMethod === 'EFECTIVO' && (
-           <div className="mb-6">
-             <label className="text-sm font-bold text-primary mb-2 block">Efectivo recibido</label>
-             <input
-               type="number"
-               value={cashReceived}
-               onChange={(e) => setCashReceived(e.target.value)}
-               onKeyDown={(e) => {
-                 if (e.key === 'Enter' && !(paymentMethod === 'EFECTIVO' && change < 0)) {
-                   onConfirm();
-                 }
-               }}
-               className="w-full px-4 py-3 border-2 border-secondary/30 rounded-xl text-lg font-bold bg-surface-container-low focus:outline-none focus:ring-2 focus:ring-primary/20"
-               placeholder="0"
-               autoFocus
-             />
-              {change >= 0 && cashReceived && (
-                <p className="mt-2 text-sm font-bold text-success">Cambio: ${change.toLocaleString()}</p>
-              )}
-              {change < 0 && cashReceived && (
-                <p className="mt-2 text-sm font-bold text-error">Falta: ${Math.abs(change).toLocaleString()}</p>
-              )}
-
-           </div>
-         )}
-
-         <div className="flex gap-3">
-           <Button variant="outline" className="flex-1" onClick={onClose}>
-             Cancelar <ShortcutBadge keys="Esc" />
-           </Button>
-           <Button
-             variant="primary"
-             className="flex-1"
-             onClick={onConfirm}
-             isLoading={isLoading}
-             disabled={paymentMethod === 'EFECTIVO' && change < 0}
-           >
-             Confirmar <ShortcutBadge keys="Ctrl+S" /> <ShortcutBadge keys="Enter" />
-           </Button>
-         </div>
-       </Card>
-     </div>
-   );
+          <div className="flex gap-3">
+            <Button variant="outline" className="flex-1" onClick={onClose}>
+              Cancelar <ShortcutBadge keys="Esc" />
+            </Button>
+            <Button
+              variant="primary"
+              className="flex-1"
+              onClick={onConfirm}
+              isLoading={isLoading}
+              disabled={paymentMethod === 'EFECTIVO' && change < 0}
+            >
+              Confirmar <ShortcutBadge keys="Ctrl+S" /> <ShortcutBadge keys="Enter" />
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
  };

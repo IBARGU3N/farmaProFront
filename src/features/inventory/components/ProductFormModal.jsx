@@ -9,6 +9,7 @@ export const ProductFormModal = ({ isOpen, onClose, onSubmit, initialData, isLoa
     registro_invima: '',
     presentacion: '',
     porcentaje_impuesto: '0',
+    precio_venta: '',
   });
   const [errors, setErrors] = useState({});
 
@@ -22,6 +23,7 @@ export const ProductFormModal = ({ isOpen, onClose, onSubmit, initialData, isLoa
         registro_invima: initialData.registro_invima || '',
         presentacion: initialData.presentacion || '',
         porcentaje_impuesto: initialData.porcentaje_impuesto || '0',
+        precio_venta: initialData.precio_venta || '',
       });
     } else {
       setForm({
@@ -32,6 +34,7 @@ export const ProductFormModal = ({ isOpen, onClose, onSubmit, initialData, isLoa
         registro_invima: '',
         presentacion: '',
         porcentaje_impuesto: '0',
+        precio_venta: '',
       });
     }
     setErrors({});
@@ -42,6 +45,9 @@ export const ProductFormModal = ({ isOpen, onClose, onSubmit, initialData, isLoa
     if (!form.nombre.trim()) newErrors.nombre = 'El nombre es obligatorio';
     if (form.porcentaje_impuesto && (isNaN(form.porcentaje_impuesto) || form.porcentaje_impuesto < 0 || form.porcentaje_impuesto > 100)) {
       newErrors.porcentaje_impuesto = 'Debe ser un valor entre 0 y 100';
+    }
+    if (form.precio_venta && (isNaN(form.precio_venta) || parseFloat(form.precio_venta) < 0)) {
+      newErrors.precio_venta = 'El precio de venta no puede ser negativo';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -54,6 +60,7 @@ export const ProductFormModal = ({ isOpen, onClose, onSubmit, initialData, isLoa
       ...form,
       laboratorio_id: form.laboratorio_id || null,
       porcentaje_impuesto: form.porcentaje_impuesto ? parseFloat(form.porcentaje_impuesto) : 0,
+      precio_venta: form.precio_venta ? parseFloat(form.precio_venta) : null,
     });
   };
 
@@ -141,18 +148,32 @@ export const ProductFormModal = ({ isOpen, onClose, onSubmit, initialData, isLoa
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-bold text-primary mb-1">Porcentaje Impuesto (%)</label>
-            <input
-              type="number"
-              value={form.porcentaje_impuesto}
-              onChange={(e) => setForm({ ...form, porcentaje_impuesto: e.target.value })}
-              className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 ${errors.porcentaje_impuesto ? 'border-red-400' : 'border-surface-container-low/30'}`}
-              min="0"
-              max="100"
-              step="0.01"
-            />
-            {errors.porcentaje_impuesto && <p className="text-xs text-red-500 mt-1">{errors.porcentaje_impuesto}</p>}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-bold text-primary mb-1">Porcentaje Impuesto (%)</label>
+              <input
+                type="number"
+                value={form.porcentaje_impuesto}
+                onChange={(e) => setForm({ ...form, porcentaje_impuesto: e.target.value })}
+                className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 ${errors.porcentaje_impuesto ? 'border-red-400' : 'border-surface-container-low/30'}`}
+                min="0"
+                max="100"
+                step="0.01"
+              />
+              {errors.porcentaje_impuesto && <p className="text-xs text-red-500 mt-1">{errors.porcentaje_impuesto}</p>}
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-primary mb-1">Precio de Venta ($)</label>
+              <input
+                type="number"
+                value={form.precio_venta}
+                onChange={(e) => setForm({ ...form, precio_venta: e.target.value })}
+                className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 ${errors.precio_venta ? 'border-red-400' : 'border-surface-container-low/30'}`}
+                min="0"
+                step="0.01"
+              />
+              {errors.precio_venta && <p className="text-xs text-red-500 mt-1">{errors.precio_venta}</p>}
+            </div>
           </div>
 
           <div className="flex gap-3 pt-4">

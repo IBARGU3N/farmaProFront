@@ -1,5 +1,8 @@
 import { NavLink } from 'react-router-dom';
 
+// Feature flag: printers module visibility in the sidebar
+const PRINTERS_MODULE_ENABLED = false;
+
 const icons = {
   dashboard: (
     <svg className="w-5 h-5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -83,6 +86,27 @@ export const Sidebar = ({ user, onLogout, navItems }) => {
               )}
             </NavLink>
           ))}
+          {PRINTERS_MODULE_ENABLED && (
+            <NavLink
+              to="/settings/printers"
+              end
+              className={({ isActive }) => `flex items-center px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-300 ${
+                isActive ? 'bg-primary text-white shadow-lg shadow-primary/30 translate-x-1' : 'text-primary/60 hover:bg-secondary/30 hover:text-primary hover:translate-x-1'
+              }`}
+            >
+              {({ isActive }) => (
+                <>
+                  <span className={`mr-3 transition-all duration-300 ${isActive ? 'scale-110 opacity-100' : 'opacity-70'}`}>
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 9V2h12v7M6 9h12v6H6z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 13h12v4H6z" />
+                    </svg>
+                  </span>
+                  Impresoras
+                </>
+              )}
+            </NavLink>
+          )}
         </nav>
       </div>
       

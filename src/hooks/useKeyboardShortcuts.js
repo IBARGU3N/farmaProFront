@@ -1,7 +1,9 @@
 import { useEffect, useCallback } from 'react';
+import { useAuthStore } from '../store/authStore';
 
 /**
  * Sistema de Atajos de Teclado para FarmaPro.
+
  *
  * Reglas:
  * - Los listeners se configuran SOLO en componentes Smart o hooks globales.
@@ -23,6 +25,8 @@ import { useEffect, useCallback } from 'react';
  * }>} shortcuts
  */
 export const useKeyboardShortcuts = (shortcuts) => {
+  const { permissions } = useAuthStore();
+
   const handler = useCallback((event) => {
     const tag = event.target.tagName;
     const isEditable =
@@ -34,10 +38,16 @@ export const useKeyboardShortcuts = (shortcuts) => {
 
       if (!keyMatch) continue;
 
+      // Verificar permisos si el atajo requiere uno
+      if (shortcut.permission && !permissions.includes(shortcut.permission)) {
+        continue;
+      }
+
       const needsCtrl = !!shortcut.ctrl;
       const needsAlt = !!shortcut.alt;
       const needsShift = !!shortcut.shift;
       const noModifiers = !needsCtrl && !needsAlt && !needsShift;
+
 
       // Verificar modificadores
       if (needsCtrl && !event.ctrlKey && !event.metaKey) continue;
@@ -104,8 +114,8 @@ export const SHORTCUT_MAP = {
   CONFIRM_PAYMENT: { key: 's', ctrl: true, label: 'Confirmar Pago [Ctrl+S]' },
 
   // CRUD general
-  NEW_RECORD:      { key: 'n', alt: true, label: 'Nuevo Registro [Alt+N]' },
-  SAVE_FORM:       { key: 's', ctrl: true, label: 'Guardar [Ctrl+S]' },
+  NEW_RECORD:      { key: 'n', alt: true, label: 'Nuevo Registro [Alt+N]', permission: 'records.create' },
+  SAVE_FORM:       { key: 's', ctrl: true, label: 'Guardar [Ctrl+S]', permission: 'records.save' },
   CANCEL:          { key: 'Escape', label: 'Cancelar / Cerrar [Esc]' },
 
   // Compras

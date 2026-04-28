@@ -7,6 +7,7 @@ import { useAuthInitializer } from './hooks/useAuthInitializer';
 import { useThemeApplier } from './hooks/useThemeApplier';
 import { ToastContainer } from './components/ui/ToastContainer';
 import { BackgroundDecoration } from './components/ui/BackgroundDecoration';
+import { SettingsProvider } from './context/SettingsContext';
 import { bootstrapTheme } from './store/uiStore';
 import { useLayoutEffect } from 'react';
 import './index.css';
@@ -25,7 +26,9 @@ function App() {
         <DIProvider>
           <BackgroundDecoration />
           <ToastContainer />
-          <AppRoutes />
+          <SettingsProvider>
+            <AppRoutes />
+          </SettingsProvider>
         </DIProvider>
       </QueryClientProvider>
     </BrowserRouter>
